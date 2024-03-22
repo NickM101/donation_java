@@ -1,4 +1,126 @@
 package org.groupwork.donation.Models;
 
+import java.sql.*;
+
 public class Model {
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/donationapp_user_details";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "";
+
+    public static void initializeDB(){
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            System.out.println("Connection");
+            //loadUsersDB(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
+
+        String insertSQL = "INSERT INTO user_details(email, username, password, location, userType, phoneNo) VALUES (?,?,?,?,?,?)";
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, location);
+            preparedStatement.setString(5, usertype);
+            preparedStatement.setString(6, phoneno);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Success");
+            }
+            //TODO : implement an if statement to check if the user was added.
+        } catch (SQLException e){
+            System.out.println("Exception caught");
+            e.printStackTrace();
+        }
+    }
+
+    public void loginUser(String username, String password) {
+        // Check if the user exists in the database
+        boolean userExists = checkUserExists(username, password);
+
+        if (userExists) {
+            // Retrieve user type from the database
+            String userType = getUserType(username);
+
+            // Call the relevant class based on user type
+            switch (userType) {
+                case "admin":
+                    //AdminInterface adminInterface = new AdminInterface();
+                    // Implement admin interface methods
+                    break;
+                case "donor":
+                    //DonorInterface donorInterface = new DonorInterface();
+                    // Implement donor interface methods
+                    break;
+                case "recipient":
+                    //RecipientInterface recipientInterface = new RecipientInterface();
+                    // Implement recipient interface methods
+                    break;
+                default:
+                    System.out.println("Unknown user type");
+            }
+        } else {
+            System.out.println("User not found. Please register.");
+            // Prompt the user to register
+            // Implement registerUser method or display a registration form
+        }
+    }
+
+    private boolean checkUserExists(String username, String password) {
+        String query = "SELECT COUNT(*) FROM user_details WHERE username = ? AND password = ?";
+        boolean userExists = false;
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    userExists = count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking user existence.");
+            e.printStackTrace();
+        }
+
+        return userExists;
+    }
+
+
+    private String getUserType(String username) {
+        String query = "SELECT userType FROM user_details WHERE username = ?";
+        String userType = null;
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    userType = resultSet.getString("userType");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving user type.");
+            e.printStackTrace();
+        }
+
+        return userType;
+    }
+
+
 }
