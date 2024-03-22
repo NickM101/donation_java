@@ -122,5 +122,28 @@ public class Model {
         return userType;
     }
 
+    public static void displayUserDetails(String username) {
+        String query = "SELECT username, userType, email, phoneNo FROM user_details WHERE username = ?";
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                String retrievedUsername = resultSet.getString("username");
+                String userType = resultSet.getString("userType");
+                String email = resultSet.getString("email");
+                String phoneNo = resultSet.getString("phoneNo");
+
+                //Implementation of labels which utilise the above variables in the GUI
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving user details.");
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
