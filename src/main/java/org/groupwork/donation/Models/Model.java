@@ -38,7 +38,6 @@ public class Model {
             if (rowsAffected > 0) {
                 System.out.println("Success");
             }
-            //TODO : implement an if statement to check if the user was added.
         } catch (SQLException e){
             System.out.println("Exception caught");
             e.printStackTrace();
@@ -143,7 +142,6 @@ public class Model {
             e.printStackTrace();
         }
     }
-
 
 
 }
