@@ -21,6 +21,8 @@ public class Model {
         }
     }
 
+
+    //The following method adds user details to the database
     public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
 
         String insertSQL = "INSERT INTO Donation_App_UD(Eamil, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
@@ -44,6 +46,8 @@ public class Model {
         }
     }
 
+
+    //The following method verifies user details at login and opens the appropriate interface
     public void loginUser(String username, String password) {
         // Check if the user exists in the database
         boolean userExists = checkUserExists(username, password);
@@ -76,6 +80,7 @@ public class Model {
         }
     }
 
+    //The following method checks if a user is present on the database
     private boolean checkUserExists(String username, String password) {
         String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Username = ? AND Password = ?";
         boolean userExists = false;
@@ -99,7 +104,7 @@ public class Model {
         return userExists;
     }
 
-
+    //The following method returns the usertype of the username provided
     private String getUserType(String username) {
         String query = "SELECT UserType FROM Donation_App_UD WHERE Username = ?";
         String userType = null;
@@ -121,6 +126,8 @@ public class Model {
         return userType;
     }
 
+
+    //The following method displays some user details in the dashboard
     public static void displayUserDetails(String username) {
         String query = "SELECT Username, UserType, Eamil, PhoneNo FROM Donation_App_UD WHERE Username = ?";
 
