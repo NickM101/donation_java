@@ -3,9 +3,9 @@ package org.groupwork.donation.Models;
 import java.sql.*;
 
 public class Model {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/donationapp_user_details";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "";
+    private static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
+    private static final String USERNAME = "sql11693731";
+    private static final String PASSWORD = "fzBx8RdtCU";
 
     public static void initializeDB(){
         try{
@@ -23,7 +23,7 @@ public class Model {
 
     public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
 
-        String insertSQL = "INSERT INTO user_details(email, username, password, location, userType, phoneNo) VALUES (?,?,?,?,?,?)";
+        String insertSQL = "INSERT INTO Donation_App_UD(Eamil, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
@@ -77,7 +77,7 @@ public class Model {
     }
 
     private boolean checkUserExists(String username, String password) {
-        String query = "SELECT COUNT(*) FROM user_details WHERE username = ? AND password = ?";
+        String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Username = ? AND Password = ?";
         boolean userExists = false;
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -101,7 +101,7 @@ public class Model {
 
 
     private String getUserType(String username) {
-        String query = "SELECT userType FROM user_details WHERE username = ?";
+        String query = "SELECT UserType FROM Donation_App_UD WHERE Username = ?";
         String userType = null;
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -122,7 +122,7 @@ public class Model {
     }
 
     public static void displayUserDetails(String username) {
-        String query = "SELECT username, userType, email, phoneNo FROM user_details WHERE username = ?";
+        String query = "SELECT Username, UserType, Eamil, PhoneNo FROM Donation_App_UD WHERE Username = ?";
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
