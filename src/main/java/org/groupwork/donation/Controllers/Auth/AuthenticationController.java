@@ -3,23 +3,23 @@ package org.groupwork.donation.Controllers.Auth;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.groupwork.donation.App;
 
 import java.io.IOException;
 
 public class AuthenticationController {
-    public TextField email_field;
-    public PasswordField password_field;
-    public Label error_msg;
+    @FXML
+    public TextField email_field = new TextField();
+    @FXML
+    public PasswordField password_field = new PasswordField();
+    @FXML
+    public Label error_msg = new Label();
 
     public String LOGIN_FXML = "/fxml/Auth/Login.fxml";
     public String REGISTER_CHOICE_FXML = "/fxml/Auth/RegisterChoice.fxml";
@@ -32,12 +32,13 @@ public class AuthenticationController {
     public Pane content_area;
 
     public void handleLogin(ActionEvent actionEvent) {
-                    navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
-//        if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
-//            error_msg.setText("Login");
-//        } else {
-//            error_msg.setText("Enter missing fields to login.");
-//        }
+//                    navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
+        System.out.println(email_field.getText());
+        if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
+            error_msg.setText("Login");
+        } else {
+            error_msg.setText("Enter missing fields to login.");
+        }
     }
 
     public void handleSignUp(ActionEvent actionEvent) { navigateTo(REGISTER_CHOICE_FXML); }
@@ -82,6 +83,9 @@ public class AuthenticationController {
                     break;
                 case "Donor":
                     stage.setTitle("User Dashboard");
+                    break;
+                case "Recipient":
+                    stage.setTitle("Recipient Dashboard");
                     break;
             }
 

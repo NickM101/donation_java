@@ -16,8 +16,8 @@
             fx:controller="org.groupwork.donation.Controllers.Auth.AuthenticationController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
-        <TextField layoutX="124.0" layoutY="295.0" prefHeight="50.0" prefWidth="400.0" promptText="Email Address" />
-        <PasswordField layoutX="124.0" layoutY="372.0" prefHeight="50.0" prefWidth="400.0" promptText="Password" />
+        <TextField fx:id="email_field" layoutX="124.0" layoutY="295.0" prefHeight="50.0" prefWidth="400.0" promptText="Email Address" />
+        <PasswordField  fx:id="password_field" layoutX="124.0" layoutY="372.0" prefHeight="50.0" prefWidth="400.0" promptText="Password" />
         <Button layoutX="126.0" layoutY="447.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="43.0" prefWidth="401.0" text="Log In">
             <font>
                 <Font name="DejaVu Sans Bold" size="13.0" />
