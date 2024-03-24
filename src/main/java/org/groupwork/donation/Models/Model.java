@@ -48,7 +48,7 @@ public class Model {
 
 
     //The following method verifies user details at login and opens the appropriate interface
-    public void loginUser(String username, String password) {
+    public static void loginUser(String username, String password) {
         // Check if the user exists in the database
         boolean userExists = checkUserExists(username, password);
 
@@ -150,5 +150,33 @@ public class Model {
         }
     }
 
+    //The following method adds the donation a donor has made to the database
+    public static void addDonation(String donation)
+    {
+        String sql = "UPDATE Donation_App_UD SET Donation = ? WHERE Username = ?";
+
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, donation);
+            preparedStatement.setString(2, username); //TODO: Create a link to the username
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Following method adds a request made by the recipient to the DB
+    public static void addRequest(String request){
+        String query = "UPDATE Donation_App_UD SET Request = ? WHERE Username = ?";
+
+        try(Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setString(1, request);
+            preparedStatement.setString(2, username);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
