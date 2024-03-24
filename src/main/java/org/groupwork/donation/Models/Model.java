@@ -1,6 +1,7 @@
 package org.groupwork.donation.Models;
 
 import java.sql.*;
+import java.util.Map;
 
 public class Model {
     private static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
@@ -183,4 +184,33 @@ public class Model {
         }
     }
 
+    /**
+     * The method below adds the donors and the recipients who
+     * have made donations and requests to two different maps
+     * to be shown on the admin page
+     * */
+    public static void donationsAndRequests(Map<String, String> donations, Map<String, String> requests) throws SQLException {
+
+        Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        String donorQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType = 'Donor' AND Donation != '-'";
+        String recipientQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType =  'Recipient' AND Donation != '-'";
+
+        try (PreparedStatement stmtDonor = connection.prepareStatement(donorQuery)){
+            ResultSet rsDonor = stmtDonor.executeQuery();
+            while (rsDonor.next()){
+                String username = rsDonor.getString("Username");
+                String donation = rsDonor.getString("Donation");
+                donations.put(username, donation);
+            }
+        }
+
+        try (PreparedStatement stmtRecipient = connection.prepareStatement(recipientQuery)){
+            ResultSet rsRecipient = stmtRecipient.executeQuery();
+            while (rsRecipient.next()){
+                String username = rsRecipient.getString("Username");
+                String request = rsRecipient.getString("Request");
+                requests.put(username, request);
+            }
+        }
+    }
 }
