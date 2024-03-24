@@ -6,13 +6,13 @@ public class Model {
     private static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
     private static final String USERNAME = "sql11693731";
     private static final String PASSWORD = "fzBx8RdtCU";
+    public static String username;
 
     public static void initializeDB(){
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            System.out.println("Connection");
-            //loadUsersDB(connection);
+            System.out.println("DB Connection established");
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -25,7 +25,7 @@ public class Model {
     //The following method adds user details to the database
     public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
 
-        String insertSQL = "INSERT INTO Donation_App_UD(Eamil, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
+        String insertSQL = "INSERT INTO Donation_App_UD(Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
@@ -58,17 +58,20 @@ public class Model {
 
             // Call the relevant class based on user type
             switch (userType) {
-                case "admin":
+                case "Admin":
                     //AdminInterface adminInterface = new AdminInterface();
                     // Implement admin interface methods
+                    System.out.println("Admin loged in");
                     break;
-                case "donor":
+                case "Donor":
                     //DonorInterface donorInterface = new DonorInterface();
                     // Implement donor interface methods
+                    System.out.println("Donor loged in");
                     break;
-                case "recipient":
+                case "Recipient":
                     //RecipientInterface recipientInterface = new RecipientInterface();
                     // Implement recipient interface methods
+                    System.out.println("Recipient loged in");
                     break;
                 default:
                     System.out.println("Unknown user type");
@@ -81,7 +84,7 @@ public class Model {
     }
 
     //The following method checks if a user is present on the database
-    private boolean checkUserExists(String username, String password) {
+    private static boolean checkUserExists(String username, String password) {
         String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Username = ? AND Password = ?";
         boolean userExists = false;
 
@@ -105,7 +108,7 @@ public class Model {
     }
 
     //The following method returns the usertype of the username provided
-    private String getUserType(String username) {
+    private static String getUserType(String username) {
         String query = "SELECT UserType FROM Donation_App_UD WHERE Username = ?";
         String userType = null;
 
@@ -115,7 +118,8 @@ public class Model {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    userType = resultSet.getString("userType");
+                    userType = resultSet.getString("UserType");
+                    System.out.println(userType);
                 }
             }
         } catch (SQLException e) {
@@ -129,7 +133,7 @@ public class Model {
 
     //The following method displays some user details in the dashboard
     public static void displayUserDetails(String username) {
-        String query = "SELECT Username, UserType, Eamil, PhoneNo FROM Donation_App_UD WHERE Username = ?";
+        String query = "SELECT Username, UserType, Email, PhoneNo FROM Donation_App_UD WHERE Username = ?";
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
