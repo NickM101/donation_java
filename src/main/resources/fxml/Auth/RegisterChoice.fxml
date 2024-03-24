@@ -10,9 +10,9 @@
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" styleClass="auth_container" stylesheets="@../../Styles/Auth.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.groupwork.donation.Controllers.Auth.RegisterChoiceController">
+<AnchorPane fx:id="content_area" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" styleClass="auth_container" stylesheets="@../../Styles/Auth.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.groupwork.donation.Controllers.Auth.AuthenticationController">
    <children>
-      <FontIcon iconLiteral="fas-chevron-left" iconSize="24" layoutX="25.0" layoutY="45.0" onMouseClicked="#handleBackButton" text="" />
+      <FontIcon iconLiteral="fas-chevron-left" iconSize="24" layoutX="25.0" layoutY="45.0" onMouseClicked="#handleBackToLogin" text="" />
       <ImageView fitHeight="75.0" fitWidth="95.0" layoutX="77.0" layoutY="76.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../Images/donation_app.png" />
