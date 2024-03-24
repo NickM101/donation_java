@@ -8,9 +8,9 @@ import javafx.stage.Stage;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Fxml/Login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Auth/Authentication.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Donation");
+        stage.setTitle("Welcome Screen");
         stage.setScene(scene);
         stage.show();
     }
