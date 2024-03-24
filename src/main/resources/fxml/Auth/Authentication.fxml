@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.groupwork.donation.Controllers.Auth.LoginController">
+   <children>
+      <BorderPane layoutX="14.0" layoutY="73.0" prefHeight="200.0" prefWidth="200.0" styleClass="auth_container" stylesheets="@../../Styles/Auth.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <left>
+            <Pane prefHeight="500.0" prefWidth="318.0" styleClass="auth_logo_container" stylesheets="@../../Styles/Auth.css" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="78.0" layoutY="227.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../Images/donation_app.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="110.0" layoutY="391.0" text="Welcome To">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="86.0" layoutY="423.0" text="DONATION">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </left>
+         <center>
+            <Pane fx:id="content_area" prefHeight="200.0" prefWidth="482.0" stylesheets="@../../Styles/Auth.css" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField layoutX="124.0" layoutY="295.0" prefHeight="50.0" prefWidth="400.0" promptText="Email Address" />
+                  <PasswordField layoutX="124.0" layoutY="372.0" prefHeight="50.0" prefWidth="400.0" promptText="Password" />
+                  <Button layoutX="126.0" layoutY="447.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="401.0" text="Log In">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="122.0" layoutY="522.0" mnemonicParsing="false" onAction="#open_registration" prefHeight="40.0" prefWidth="400.0" styleClass="register_button" stylesheets="@../../Styles/Auth.css" text="Don't have an account? Sign up" />
+                  <ImageView fitHeight="76.0" fitWidth="96.0" layoutX="128.0" layoutY="120.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../Images/donation_app.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="128.0" layoutY="238.0" text="Sign in to continue">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="128.0" layoutY="196.0" text="Welcome Back">
+                     <font>
+                        <Font name="DejaVu Sans Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </center></BorderPane>
+   </children>
+</AnchorPane>

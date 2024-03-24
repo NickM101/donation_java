@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.groupwork.donation.Controllers.Auth.LoginController">
+   <VBox layoutX="7.0" layoutY="2.0" prefHeight="400.0" prefWidth="200.0" styleClass="login_logo_container" stylesheets="@../../Styles/Login.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <FontAwesomeIconView glyphName="USERS" size="30" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Donation" />
+   </VBox>
+   <VBox layoutX="223.0" layoutY="25.0" prefHeight="350.0" prefWidth="350.0" styleClass="login_form_container" stylesheets="@../../Styles/Login.css" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to Donation">
+         <font>
+            <Font name="Noto Sans Bold" size="22.0" />
+         </font>
+      </Text>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <Label fx:id="error_msg" alignment="CENTER" contentDisplay="CENTER" styleClass="error_label" stylesheets="@../../Styles/Login.css" />
+      </HBox>
+      <Label styleClass="input_field" stylesheets="@../../Styles/Login.css" text="Email address">
+         <font>
+            <Font name="Noto Sans Regular" size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="email_field" styleClass="input_field" stylesheets="@../../Styles/Login.css" />
+      <Label layoutX="10.0" layoutY="128.0" styleClass="input_field" stylesheets="@../../Styles/Login.css" text="Password" />
+      <PasswordField fx:id="password_field" styleClass="input_field" />
+      <Button fx:id="login_btn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loginButtonOnAction" styleClass="login_form_container" stylesheets="@../../Styles/Login.css" text="Login" textAlignment="CENTER" />
+      <HBox layoutX="10.0" layoutY="28.0" prefHeight="100.0" prefWidth="200.0" style="-fx-alignment: center;">
+         <Label text="Don't have an account? Sign Up" />
+      </HBox>
+   </VBox>
+</AnchorPane>
