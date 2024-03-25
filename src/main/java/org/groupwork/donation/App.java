@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.groupwork.donation.Models.Model;
 
 public class App extends Application {
     @Override
@@ -13,5 +14,6 @@ public class App extends Application {
         stage.setTitle("Welcome Screen");
         stage.setScene(scene);
         stage.show();
+        Model.initializeDB();
     }
 }
