@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.groupwork.donation.Models.Model;
 
 import java.io.IOException;
 
@@ -37,6 +38,7 @@ public class AuthenticationController {
         if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
             navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
             error_msg.setText("Login");
+            Model.loginUser(email_field.getText(), password_field.getText());
         } else {
             error_msg.setText("Enter missing fields to login.");
         }
