@@ -33,9 +33,10 @@ public class AuthenticationController {
     public Pane content_area;
 
     public void handleLogin(ActionEvent actionEvent) {
-//                    navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
+//
         System.out.println(email_field.getText());
         if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
+            navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
             error_msg.setText("Login");
             Model.loginUser(email_field.getText(), password_field.getText());
         } else {
