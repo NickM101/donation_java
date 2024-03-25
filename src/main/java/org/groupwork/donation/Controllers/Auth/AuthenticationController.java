@@ -36,7 +36,7 @@ public class AuthenticationController {
 //
         System.out.println(email_field.getText());
         if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
-            navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
+            //navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
             error_msg.setText("Login");
             Model.loginUser(email_field.getText(), password_field.getText());
         } else {
@@ -69,7 +69,7 @@ public class AuthenticationController {
         }
     }
 
-    private void navigationToDashboard(String name, String fxmlFile) {
+    public void navigationToDashboard(String name, String fxmlFile) {
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));

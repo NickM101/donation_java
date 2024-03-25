@@ -1,5 +1,7 @@
 package org.groupwork.donation.Models;
 
+import org.groupwork.donation.Controllers.Auth.AuthenticationController;
+
 import java.sql.*;
 import java.util.Map;
 
@@ -62,6 +64,8 @@ public class Model {
                 case "Admin":
                     //AdminInterface adminInterface = new AdminInterface();
                     // Implement admin interface methods
+                    AuthenticationController authC = new AuthenticationController();
+                    authC.navigationToDashboard("Admin", authC.ADMIN_DASHBOARD_FXML);
                     System.out.println("Admin loged in");
                     break;
                 case "Donor":
