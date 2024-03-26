@@ -3,42 +3,66 @@ package org.groupwork.donation.Controllers.Auth;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.groupwork.donation.Models.Model;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AuthenticationController {
+    private Stage primaryStage = new Stage();
     @FXML
-    public TextField email_field = new TextField();
+    private TextField email_field;
+
     @FXML
-    public PasswordField password_field = new PasswordField();
+    private PasswordField password_field;
+
     @FXML
-    public Label error_msg = new Label();
+    private Label error_msg;
+
+    @FXML
+    private Pane content_area;
+
+    public void setError(String error) {
+        System.out.println(error_msg);
+        error_msg.setText(error);
+    }
+
 
     public String LOGIN_FXML = "/fxml/Auth/Login.fxml";
     public String REGISTER_CHOICE_FXML = "/fxml/Auth/RegisterChoice.fxml";
     public String REGISTER_DONOR_FXML = "/fxml/Auth/RegisterDonor.fxml";
     public String REGISTER_RECIPIENT_FXML = "/fxml/Auth/RegisterRecipient.fxml";
-    public String REGISTER_DONOR_FORM_FXML = "/fxml/Auth/RegisterChoice.fxml";
     public String ADMIN_DASHBOARD_FXML = "/fxml/Admin/Admin.fxml";
-
-    @FXML
-    public Pane content_area;
+    public String DONOR_DASHBOARD_FXML = "/fxml/Admin/Donor.fxml";
+    public String RECIPIENT_DASHBOARD_FXML = "/fxml/Admin/Recipient.fxml";
 
     public void handleLogin(ActionEvent actionEvent) {
-//
-        System.out.println(email_field.getText());
         if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
-            navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML);
-            error_msg.setText("Login");
             Model.loginUser(email_field.getText(), password_field.getText());
+            String userType = Model.userType;
+            System.out.println(userType);
+
+            switch (userType) {
+                case "Admin":
+                    navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML, actionEvent);
+                    break;
+                case "Donor":
+                    navigationToDashboard("Donor", DONOR_DASHBOARD_FXML, actionEvent);
+                    break;
+                case "Recipient":
+                    navigationToDashboard("Recipient", RECIPIENT_DASHBOARD_FXML, actionEvent);
+                    break;
+            }
+
         } else {
             error_msg.setText("Enter missing fields to login.");
         }
@@ -69,28 +93,25 @@ public class AuthenticationController {
         }
     }
 
-    private void navigationToDashboard(String name, String fxmlFile) {
+    public void navigationToDashboard(String name, String fxmlFile, ActionEvent event) {
+        final String ICON_IMAGE = "/Images/donation_app.png";
+        InputStream ImageClass = getClass().getResourceAsStream(ICON_IMAGE);
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+
             Pane root = loader.load();
+
+            Node  source = (Node)  event.getSource();
+            Stage prev_stage  = (Stage) source.getScene().getWindow();
+            prev_stage.close();
 
             // Create a new stage and set the scene
             Stage stage = new Stage();
+            stage.setTitle(name + " Dashboard");
+            stage.getIcons().add(new Image(ImageClass));
             stage.setScene(new Scene(root));
 
-            // Additional logic based on the user's role (name)
-            switch (name) {
-                case "Admin":
-                    stage.setTitle("Admin Dashboard");
-                    break;
-                case "Donor":
-                    stage.setTitle("User Dashboard");
-                    break;
-                case "Recipient":
-                    stage.setTitle("Recipient Dashboard");
-                    break;
-            }
 
             // Show the stage
             stage.show();
