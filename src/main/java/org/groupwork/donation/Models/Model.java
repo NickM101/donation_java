@@ -10,9 +10,9 @@ import org.groupwork.donation.Controllers.Auth.AuthenticationController;
 
 
 public class Model {
-    private static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
-    private static final String USERNAME = "sql11693731";
-    private static final String PASSWORD = "fzBx8RdtCU";
+    public static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
+    public static final String USERNAME = "sql11693731";
+    public static final String PASSWORD = "fzBx8RdtCU";
     public static String username;
     public static String userType;
 
@@ -30,7 +30,7 @@ public class Model {
     }
 
 
-    //The following method adds user details to the database
+    //The following method adds user details to the database OBSOLETE
     public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
 
         String insertSQL = "INSERT INTO Donation_App_UD(Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
@@ -64,30 +64,6 @@ public class Model {
             // Retrieve user type from the database
             userType = getUserType(username);
 
-
-
-            // Call the relevant class based on user type
-            switch (userType) {
-                case "Admin":
-                    //AdminInterface adminInterface = new AdminInterface();
-                    // Implement admin interface methods
-                    AuthenticationController authC = new AuthenticationController();
-                    authC.navigationToDashboard("Admin", authC.ADMIN_DASHBOARD_FXML);
-                    System.out.println("Admin loged in");
-                    break;
-                case "Donor":
-                    //DonorInterface donorInterface = new DonorInterface();
-                    // Implement donor interface methods
-                    System.out.println("Donor loged in");
-                    break;
-                case "Recipient":
-                    //RecipientInterface recipientInterface = new RecipientInterface();
-                    // Implement recipient interface methods
-                    System.out.println("Recipient loged in");
-                    break;
-                default:
-                    System.out.println("Unknown user type");
-            }
         } else {
             AuthenticationController controller = new AuthenticationController();
 //            controller.setError("User not found. Please register.");
