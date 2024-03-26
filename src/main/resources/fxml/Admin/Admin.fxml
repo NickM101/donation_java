@@ -35,7 +35,7 @@
             </VBox>
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleOverview" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-color: black; -fx-border-radius: 10;" text="Overview" />
             <Button alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleVerifyAccounts" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Verify Accounts" />
-            <Button alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleTotalDonars" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Donars" />
+            <Button alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" onAction="#handleTotalDonors" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Donars" />
             <Button alignment="CENTER" layoutX="10.0" layoutY="210.0" mnemonicParsing="false" onAction="#handleTotalRecipients" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Recipients" />
             <Button alignment="CENTER" layoutX="10.0" layoutY="260.0" mnemonicParsing="false" onAction="#handleTotalDonations" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Donations" />
             <VBox prefHeight="115.0" prefWidth="250.0" />

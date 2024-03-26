@@ -5,11 +5,16 @@ import org.groupwork.donation.Controllers.Auth.AuthenticationController;
 import java.sql.*;
 import java.util.Map;
 
+import org.groupwork.donation.Controllers.Admin.AdminControllers;
+import org.groupwork.donation.Controllers.Auth.AuthenticationController;
+
+
 public class Model {
     private static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
     private static final String USERNAME = "sql11693731";
     private static final String PASSWORD = "fzBx8RdtCU";
     public static String username;
+    public static String userType;
 
     public static void initializeDB(){
         try{
@@ -57,7 +62,9 @@ public class Model {
 
         if (userExists) {
             // Retrieve user type from the database
-            String userType = getUserType(username);
+            userType = getUserType(username);
+
+
 
             // Call the relevant class based on user type
             switch (userType) {
@@ -82,7 +89,9 @@ public class Model {
                     System.out.println("Unknown user type");
             }
         } else {
-            System.out.println("User not found. Please register.");
+            AuthenticationController controller = new AuthenticationController();
+//            controller.setError("User not found. Please register.");
+//            System.out.println("User not found. Please register.");
             // Prompt the user to register
             // Implement registerUser method or display a registration form
         }
