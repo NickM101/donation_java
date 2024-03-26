@@ -1,10 +1,9 @@
 package org.groupwork.donation.Models;
 
+import org.groupwork.donation.Controllers.Auth.AuthenticationController;
+
 import java.sql.*;
 import java.util.Map;
-
-import org.groupwork.donation.Controllers.Admin.AdminControllers;
-import org.groupwork.donation.Controllers.Auth.AuthenticationController;
 
 
 public class Model {
@@ -222,4 +221,28 @@ public class Model {
             }
         }
     }
-}
+
+    //add donor to database
+    public static boolean addUser(String text, String text1) {
+        // Implement code here to interact with the database and save user details
+
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/donation_db", "username", "password")) {
+            String sql = "INSERT INTO users (email, password, name, address, phone_number) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, "email");
+            statement.setString(2, "password");
+            statement.setString(3, "name");
+            statement.setString(4, "address");
+            statement.setString(5, "phoneNumber");
+
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0; // Return true if user was successfully added
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            // Return false if an error occurred
+            return false;
+        }
+    }
+
+    }

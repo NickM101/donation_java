@@ -51,6 +51,7 @@ public class AuthenticationController {
             String userType = Model.userType;
             System.out.println(userType);
 
+
             switch (userType) {
                 case "Admin":
                     navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML, actionEvent);
@@ -70,8 +71,37 @@ public class AuthenticationController {
 
     public void handleSignUp(ActionEvent actionEvent) { navigateTo(REGISTER_CHOICE_FXML); }
     public void handleBackToLogin(MouseEvent mouseEvent) { navigateTo(LOGIN_FXML); }
-    public void handleDonorRegistration(MouseEvent mouseEvent) {
+    public void handleDonorRegistration(ActionEvent mouseEvent) {
+
         navigateTo(REGISTER_DONOR_FXML);
+    }
+
+    public void registerDonor(String email, String password, String name, String address, String phoneNumber) {
+        if (!email.isEmpty() && !password.isEmpty() && !name.isEmpty() && !address.isEmpty() && !phoneNumber.isEmpty()) {
+            // Call the addUser method in the Model class to add the donor
+            boolean registrationSuccessful = Model.addUser(email, password);
+            if (registrationSuccessful) {
+                // Provide feedback to the user about successful registration
+                System.out.println("Donor registration successful!");
+                // Optionally, you can navigate the user to their dashboard after successful registration
+                navigationToDashboard("Donor", DONOR_DASHBOARD_FXML, null); // Pass null as ActionEvent
+            } else {
+                // Provide feedback to the user about registration failure
+                System.out.println("Failed to register donor. Please try again.");
+                // Optionally, you can update the error message displayed to the user
+                setError("Failed to register donor. Please try again.");
+            }
+        } else {
+            // Provide feedback to the user about missing fields
+            System.out.println("Enter all fields to register as a donor.");
+            // Optionally, you can update the error message displayed to the user
+            setError("Enter all fields to register as a donor.");
+        }
+    }
+
+    public void handleDonorNavigation(MouseEvent mouseEvent) {
+        navigateTo(REGISTER_DONOR_FXML);
+
     }
     public void handleRecipientRegistration(MouseEvent mouseEvent) {
         navigateTo(REGISTER_RECIPIENT_FXML);
