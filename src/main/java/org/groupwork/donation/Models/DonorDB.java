@@ -4,6 +4,8 @@ import java.sql.*;
 
 public class DonorDB {
     //The method below adds a donor to the DB on registration (TDB) To DataBase
+
+    static String username;
     public static void addDonorTDB(String email, String username, String password, String location, String usertype, String phoneno){
 
         String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
@@ -46,7 +48,20 @@ public class DonorDB {
         }
     }
 
-    public static void addDonationsTDB(){}
+    //The method below adds a donation to the DB
+    public static void addDonationTDB(String donation)
+    {
+        String sql = "UPDATE Donor_UD SET DonationType = ? WHERE Username = ?";
+
+        try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, donation);
+            preparedStatement.setString(2, username); //TODO: Create a link to the username
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void listDonors(){}//TODO Review for moving into the admin class
 }
