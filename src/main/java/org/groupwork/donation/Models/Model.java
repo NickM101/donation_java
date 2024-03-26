@@ -54,13 +54,13 @@ public class Model {
 
 
     //The following method verifies user details at login and opens the appropriate interface
-    public static void loginUser(String username, String password) {
+    public static void loginUser(String email, String password) {
         // Check if the user exists in the database
-        boolean userExists = checkUserExists(username, password);
+        boolean userExists = checkUserExists(email, password);
 
         if (userExists) {
             // Retrieve user type from the database
-            userType = getUserType(username);
+            userType = getUserType(email);
 
 
 
@@ -94,13 +94,13 @@ public class Model {
     }
 
     //The following method checks if a user is present on the database
-    private static boolean checkUserExists(String username, String password) {
-        String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Username = ? AND Password = ?";
+    private static boolean checkUserExists(String email, String password) {
+        String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Email = ? AND Password = ?";
         boolean userExists = false;
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -118,13 +118,13 @@ public class Model {
     }
 
     //The following method returns the usertype of the username provided
-    private static String getUserType(String username) {
-        String query = "SELECT UserType FROM Donation_App_UD WHERE Username = ?";
+    private static String getUserType(String email) {
+        String query = "SELECT UserType FROM Donation_App_UD WHERE Email = ?";
         String userType = null;
 
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, email);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
