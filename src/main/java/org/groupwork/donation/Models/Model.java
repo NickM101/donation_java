@@ -223,7 +223,7 @@ public class Model {
     }
 
     //add donor to database
-    public static boolean addUser(String text, String text1) {
+    public static boolean addUser(String email, String password) {
         // Implement code here to interact with the database and save user details
 
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/donation_db", "username", "password")) {
@@ -246,3 +246,4 @@ public class Model {
     }
 
     }
+

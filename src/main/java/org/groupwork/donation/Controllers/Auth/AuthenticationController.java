@@ -70,6 +70,39 @@ public class AuthenticationController {
     }
 
     public void handleSignUp(ActionEvent actionEvent) { navigateTo(REGISTER_CHOICE_FXML); }
+
+    public void singUp (String email, String name, String password, String address, String phoneNumber){
+
+        if (!email.isEmpty() && !password.isEmpty() && !name.isEmpty() && !address.isEmpty() && !phoneNumber.isEmpty()) {
+
+//        Call the add method in model class to add user  a new User
+
+            boolean registrationSuccessful = Model.addUser(email, password);
+
+            if (registrationSuccessful) {
+//                give feedback to user
+                System.out.println("Registration successful");
+//                navigate user to register choice dashboard
+                navigationToDashboard("Client", REGISTER_CHOICE_FXML, null);
+
+            } else {
+//              give feedback to user about  failed to registration
+                System.out.println("Registration failed .Please try again");
+
+//        give a message to display to user about failed registration
+
+                setError("Registration failed.Please try again");
+
+            }
+
+        } else {
+//            give feedback to user about missing field to register
+            System.out.println("Enter all fields to continue Registration ");
+//            display a message to user about missing field
+            setError("Enter all fields to continue registration");
+
+        }
+    }
     public void handleBackToLogin(MouseEvent mouseEvent) { navigateTo(LOGIN_FXML); }
     public void handleDonorRegistration(ActionEvent mouseEvent) {
 
@@ -105,6 +138,38 @@ public class AuthenticationController {
     }
     public void handleRecipientRegistration(MouseEvent mouseEvent) {
         navigateTo(REGISTER_RECIPIENT_FXML);
+    }
+
+    public void registerRecipient(String email, String name, String password, String address, String phoneNumber){
+
+        if (!email.isEmpty() && !password.isEmpty() && !name.isEmpty() && !address.isEmpty() && !phoneNumber.isEmpty()) {
+
+//            Call the addUser method in the model class to add Recipient
+            boolean registrationSuccessfull = Model.addUser(email, password);
+
+            if (registrationSuccessfull) {
+//                give feedback to user
+                System.out.println("Recipient registration succefull");
+
+//                navigate to Recipent Dashboard
+                navigationToDashboard("Recipient", RECIPIENT_DASHBOARD_FXML, null);
+            } else {
+
+//                give feedback to user about registration failure
+                System.out.println("Failed to Register Recipient.Please try again");
+
+//                give alert error message display to user
+                setError("Failled to register Recipient.Please try again");
+
+            }
+
+        } else {
+//            give feedback to usre about missing feilds
+            System.out.println("Enter all fields to register as a recipient");
+
+//            provide alert message to display to user
+            setError("Enter all missing field to register as recipient");
+        }
     }
     public void handleBackToChoice(MouseEvent mouseEvent) {
         navigateTo(REGISTER_CHOICE_FXML);
