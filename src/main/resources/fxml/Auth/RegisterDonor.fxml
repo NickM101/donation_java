@@ -37,7 +37,7 @@
             <TextField prefHeight="50.0" prefWidth="450.0" promptText="Email Address" />
             <TextField prefHeight="50.0" prefWidth="450.0" promptText="Phone Number" />
             <TextField prefHeight="50.0" prefWidth="450.0" promptText="Location" />
-            <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="450.0" text="Register">
+            <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="450.0" text="Register" onAction="#registerDonor">
                <font>
                   <Font name="DejaVu Sans Bold" size="13.0" />
                </font>

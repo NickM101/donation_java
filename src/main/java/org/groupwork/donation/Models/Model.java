@@ -1,41 +1,31 @@
 package org.groupwork.donation.Models;
 
-import org.groupwork.donation.Controllers.Auth.AuthenticationController;
-
 import java.sql.*;
 import java.util.Map;
-
-import org.groupwork.donation.Controllers.Admin.AdminControllers;
-import org.groupwork.donation.Controllers.Auth.AuthenticationController;
-
 
 public class Model {
     public static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
     public static final String USERNAME = "sql11693731";
     public static final String PASSWORD = "fzBx8RdtCU";
-    public static String username;
-    public static String userType;
 
-    public static void initializeDB(){
-        try{
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+    }
+
+    public static void initializeDB() {
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            Connection connection = getConnection();
             System.out.println("DB Connection established");
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } catch (Exception e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-
-    //The following method adds user details to the database OBSOLETE
-    public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
-
+    public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno) {
         String insertSQL = "INSERT INTO Donation_App_UD(Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, username);
@@ -48,28 +38,27 @@ public class Model {
             if (rowsAffected > 0) {
                 System.out.println("Success");
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Exception caught");
             e.printStackTrace();
         }
     }
 
-
-    //The following method verifies user details at login and opens the appropriate interface
     public static void loginUser(String email, String password) {
         boolean userExists = checkUserExists(email, password);
+        System.out.println(userExists);
 
         if (userExists) {
-            userType = getUserType(email);
+            getUserType(email);
+            System.out.println(userExists);
         }
     }
 
-    //The following method checks if a user is present on the database
     private static boolean checkUserExists(String email, String password) {
         String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Email = ? AND Password = ?";
         boolean userExists = false;
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -88,18 +77,15 @@ public class Model {
         return userExists;
     }
 
-    //The following method returns the usertype of the username provided
-    private static String getUserType(String email) {
+    private static void getUserType(String email) {
         String query = "SELECT UserType FROM Donation_App_UD WHERE Email = ?";
-        String userType = null;
-
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    userType = resultSet.getString("UserType");
+                    String userType = resultSet.getString("UserType");
                     System.out.println(userType);
                 }
             }
@@ -107,16 +93,12 @@ public class Model {
             System.out.println("Error retrieving user type.");
             e.printStackTrace();
         }
-
-        return userType;
     }
 
-
-    //The following method displays some user details in the dashboard
     public static void displayUserDetails(String username) {
         String query = "SELECT Username, UserType, Email, PhoneNo FROM Donation_App_UD WHERE Username = ?";
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
 
@@ -126,9 +108,7 @@ public class Model {
                 String email = resultSet.getString("email");
                 String phoneNo = resultSet.getString("phoneNo");
 
-                //Implementation of labels which utilise the above variables in the GUI
-                System.out.println(email);
-
+                System.out.println(email); // Print or use retrieved data
             }
         } catch (SQLException e) {
             System.out.println("Error retrieving user details.");
@@ -136,62 +116,57 @@ public class Model {
         }
     }
 
-    //The following method adds the donation a donor has made to the database
-    public static void addDonation(String donation)
-    {
+    public static void addDonation(String donation) {
         String sql = "UPDATE Donation_App_UD SET Donation = ? WHERE Username = ?";
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, donation);
-            preparedStatement.setString(2, username); //TODO: Create a link to the username
-
+            preparedStatement.setString(2, getUsername());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    //Following method adds a request made by the recipient to the DB
-    public static void addRequest(String request){
+    private static String getUsername() {
+        return null;
+    }
+
+    public static void addRequest(String request) {
         String query = "UPDATE Donation_App_UD SET Request = ? WHERE Username = ?";
 
-        try(Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, request);
-            preparedStatement.setString(2, username);
-
+            preparedStatement.setString(2, getUsername());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * The method below adds the donors and the recipients who
-     * have made donations and requests to two different maps
-     * to be shown on the admin page
-     * */
-    public static void donationsAndRequests(Map<String, String> donations, Map<String, String> requests) throws SQLException {
-
-        Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+    public static void donationsAndRequests(Map<String, String> donations, Map<String, String> requests) {
         String donorQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType = 'Donor' AND Donation != '-'";
-        String recipientQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType =  'Recipient' AND Donation != '-'";
+        String recipientQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType = 'Recipient' AND Donation != '-'";
 
-        try (PreparedStatement stmtDonor = connection.prepareStatement(donorQuery)){
+        try (Connection connection = getConnection();
+             PreparedStatement stmtDonor = connection.prepareStatement(donorQuery);
+             PreparedStatement stmtRecipient = connection.prepareStatement(recipientQuery)) {
+
             ResultSet rsDonor = stmtDonor.executeQuery();
-            while (rsDonor.next()){
+            while (rsDonor.next()) {
                 String username = rsDonor.getString("Username");
                 String donation = rsDonor.getString("Donation");
                 donations.put(username, donation);
             }
-        }
 
-        try (PreparedStatement stmtRecipient = connection.prepareStatement(recipientQuery)){
             ResultSet rsRecipient = stmtRecipient.executeQuery();
-            while (rsRecipient.next()){
+            while (rsRecipient.next()) {
                 String username = rsRecipient.getString("Username");
                 String request = rsRecipient.getString("Request");
                 requests.put(username, request);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
