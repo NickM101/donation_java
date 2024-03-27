@@ -2,17 +2,15 @@ package org.groupwork.donation.Models;
 
 import java.sql.*;
 import java.util.ArrayList;
+public class RecipientDB {
 
-public class DonorDB {
+    public static ArrayList<Recipients> recipientArray = new ArrayList<>();
 
-    //donorArray : Contains objects of all the donors in the DB
-    public static ArrayList<Donors> donorArray = new ArrayList<>();
+    //The method below adds a recipient to the DB on registration. (TDB) To DataBase
+    public static void addRecipientTDB(String email, String username, String password, String location, String usertype, String phoneno, String orgWeb){
 
-    //The method below adds a donor to the DB on registration. (TDB) To DataBase
-    public static void addDonorTDB(String email, String username, String password, String location, String usertype, String phoneno){
-
-        String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
-        String inDonor = "INSERT INTO Donor_UD (Email, Username, Location, UserType, PhoneNo) VALUES (?,?,?,?,?)";
+        String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo, Org_Website) VALUES (?,?,?,?,?,?,?)";
+        String inRecipient = "INSERT INTO Recipient_UD (email, username, location, usertype, phone, status, requestType) VALUES (?,?,?,?,?,?,?)";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(inAuth)) {
@@ -22,6 +20,7 @@ public class DonorDB {
             preparedStatement.setString(4, location);
             preparedStatement.setString(5, usertype);
             preparedStatement.setString(6, phoneno);
+            preparedStatement.setString(7, orgWeb);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -33,32 +32,35 @@ public class DonorDB {
         }
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
-            PreparedStatement prepStmtDUD = connection.prepareStatement(inDonor)){
-            prepStmtDUD.setString(1, email);
-            prepStmtDUD.setString(2, username);
-            prepStmtDUD.setString(3, location);
-            prepStmtDUD.setString(4, usertype);
-            prepStmtDUD.setString(5, phoneno);
+             PreparedStatement prepStmtRUD = connection.prepareStatement(inRecipient)){
+            prepStmtRUD.setString(1, email);
+            prepStmtRUD.setString(2, username);
+            prepStmtRUD.setString(3, location);
+            prepStmtRUD.setString(4, usertype);
+            prepStmtRUD.setString(5, phoneno);
+            prepStmtRUD.setString(6, "NA");
+            prepStmtRUD.setString(7, "None made");
 
-            int rowsAffected2 = prepStmtDUD.executeUpdate();
+            int rowsAffected2 = prepStmtRUD.executeUpdate();
             if (rowsAffected2 > 0){
-                System.out.println("Added to the donor DB");
+                System.out.println("Added to the recipient DB");
             }
         }
         catch (SQLException e){
-            System.out.println("Exception to donor DB Caught");
+            System.out.println("Exception to recipient DB Caught");
             e.printStackTrace();
         }
+
     }
 
-    //The method below adds a donation to the DB
-    public static void addDonationTDB(String donation)
+    //The method below adds a request to the DB
+    public static void addRequestTDB(String request)
     {
-        String sql = "UPDATE Donor_UD SET DonationType = ? WHERE Email = ?";
+        String sql = "UPDATE Recipient_UD SET RequestType = ? WHERE Email = ?";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, donation);
+            preparedStatement.setString(1, request);
             preparedStatement.setString(2, Model.userEmail);
 
         } catch (SQLException e) {
@@ -66,9 +68,9 @@ public class DonorDB {
         }
     }
 
-    //Lists the donors and their donations on the admin page
-    public static void listDonors() throws SQLException{
-        String selectSQL = "SELECT * FROM Donor_UD";
+    //Lists the Recipients and their requests on the admin page
+    public static ArrayList listRecipints() throws SQLException{
+        String selectSQL = "SELECT * FROM Recipient_UD";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
@@ -80,25 +82,27 @@ public class DonorDB {
                 String phone = resultSet.getString("phone");
                 String location = resultSet.getString("location");
                 String status = resultSet.getString("status");
-                String donationType = resultSet.getString("donationType");
+                String requestType = resultSet.getString("requestType");
 
-                donorArray.add(new Donors(username, email, phone, location, status, donationType));
+                recipientArray.add(new Recipients(username, email, phone, location, status, requestType));
             }
         }
+
+        return recipientArray;
     }
 }
 
-//The below class holds the donors details from the DB
-class Donors {
-    private String username, email, phone, location, status, donationType;
+//The class below holds the recipients details from the DB
+class Recipients {
+    private String username, email, phone, location, status, requestType;
 
-    public Donors(String username, String email, String phone, String location, String status, String donationType){
+    public Recipients(String username, String email, String phone, String location, String status, String requestType){
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.location = location;
         this.status = status;
-        this.donationType = donationType;
+        this.requestType = requestType;
     }
 
     public String getUsername() {
@@ -142,6 +146,6 @@ class Donors {
     }
 
     public String getDonationType() {
-        return donationType;
+        return requestType;
     }
 }
