@@ -1,11 +1,14 @@
 package org.groupwork.donation.Models;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DonorDB {
-    //The method below adds a donor to the DB on registration (TDB) To DataBase
 
-    static String username;
+    //donorArray : Contains objects of all the donors in the DB
+    public static ArrayList<Donors> donorArray = new ArrayList<>();
+
+    //The method below adds a donor to the DB on registration. (TDB) To DataBase
     public static void addDonorTDB(String email, String username, String password, String location, String usertype, String phoneno){
 
         String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
@@ -51,17 +54,94 @@ public class DonorDB {
     //The method below adds a donation to the DB
     public static void addDonationTDB(String donation)
     {
-        String sql = "UPDATE Donor_UD SET DonationType = ? WHERE Username = ?";
+        String sql = "UPDATE Donor_UD SET DonationType = ? WHERE Email = ?";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, donation);
-            preparedStatement.setString(2, username); //TODO: Create a link to the username
+            preparedStatement.setString(2, Model.userEmail);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void listDonors(){}//TODO Review for moving into the admin class
+    //Lists the donors and their donations on the admin page
+    public static void listDonors() throws SQLException{
+        String selectSQL = "SELECT * FROM Donor_UD";
+
+        try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String username = resultSet.getString("username");
+                String email = resultSet.getString("email");
+                String phone = resultSet.getString("phone");
+                String location = resultSet.getString("location");
+                String status = resultSet.getString("status");
+                String donationType = resultSet.getString("donationType");
+
+                donorArray.add(new Donors(username, email, phone, location, status, donationType));
+            }
+        }
+    }//TODO Review for moving into the admin class
+}
+
+//The below class holds the donors details from the DB
+class Donors {
+    private String username, email, phone, location, status, donationType;
+
+    public Donors(String username, String email, String phone, String location, String status, String donationType){
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.location = location;
+        this.status = status;
+        this.donationType = donationType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDonationType() {
+        return donationType;
+    }
 }

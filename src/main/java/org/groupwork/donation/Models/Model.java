@@ -13,7 +13,7 @@ public class Model {
     public static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
     public static final String USERNAME = "sql11693731";
     public static final String PASSWORD = "fzBx8RdtCU";
-    public static String username;
+    public static String userEmail;
     public static String userType;
 
     public static void initializeDB(){
@@ -30,7 +30,8 @@ public class Model {
     }
 
 
-    //The following method adds user details to the database OBSOLETE
+    //The following method adds user details to the database
+    //TODO : mAKE obsolete
     public static void addUserToDB(String email, String username, String password, String location, String usertype, String phoneno){
 
         String insertSQL = "INSERT INTO Donation_App_UD(Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
@@ -63,6 +64,7 @@ public class Model {
         if (userExists) {
             // Retrieve user type from the database
             userType = getUserType(email);
+            userEmail = email;
 
         } else {
             AuthenticationController controller = new AuthenticationController();
@@ -144,7 +146,7 @@ public class Model {
         }
     }
 
-    //The following method adds the donation a donor has made to the database
+    //The following method adds the donation a donor has made to the database OBSOLETE
     public static void addDonation(String donation)
     {
         String sql = "UPDATE Donation_App_UD SET Donation = ? WHERE Username = ?";
@@ -152,21 +154,21 @@ public class Model {
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, donation);
-            preparedStatement.setString(2, username); //TODO: Create a link to the username
+            preparedStatement.setString(2, userEmail); //TODO: Create a link to the username
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    //Following method adds a request made by the recipient to the DB
+    //Following method adds a request made by the recipient to the DB OBSOLETE
     public static void addRequest(String request){
         String query = "UPDATE Donation_App_UD SET Request = ? WHERE Username = ?";
 
         try(Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setString(1, request);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(2, userEmail);
 
         } catch (SQLException e) {
             e.printStackTrace();
