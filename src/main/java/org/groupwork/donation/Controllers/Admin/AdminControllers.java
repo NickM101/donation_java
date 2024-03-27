@@ -12,7 +12,7 @@ public class AdminControllers {
     public AnchorPane content_area;
 
     public String OVERVIEW_DASH_FXML = "/fxml/Admin/OverviewDash.fxml";
-    public String TotalDonors_FXML = "/fxml/Admin/TotalDonars.fxml";
+    public String TotalDonors_FXML = "/fxml/Admin/TotalDonors.fxml";
     public String TotalDonations_FXML = "/fxml/Admin/TotalDonations.fxml";
     public String TotalRecipients_FXML = "/fxml/Admin/TotalRecipients.fxml";
     public String VerifyAccounts_FXML = "/fxml/Admin/VerifyAccounts.fxml";
@@ -25,7 +25,7 @@ public class AdminControllers {
         navigateTo(VerifyAccounts_FXML);
     }
 
-    public void handleTotalDonars(ActionEvent actionEvent) {
+    public void handleTotalDonors(ActionEvent actionEvent) {
         navigateTo(TotalDonors_FXML);
     }
 
@@ -49,6 +49,5 @@ public class AdminControllers {
             e.printStackTrace();
         }
     }
-
 
 }
