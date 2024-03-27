@@ -11,8 +11,8 @@ public class DonorDB {
     //The method below adds a donor to the DB on registration. (TDB) To DataBase
     public static void addDonorTDB(String email, String username, String password, String location, String usertype, String phoneno){
 
-        String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
-        String inDonor = "INSERT INTO Donor_UD (Email, Username, Location, UserType, PhoneNo) VALUES (?,?,?,?,?)";
+        String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo, Org_Website) VALUES (?,?,?,?,?,?,?)";
+        String inDonor = "INSERT INTO Donor_UD (email, username, location, userType, phoneno, status, donationType) VALUES (?,?,?,?,?,?,?)";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(inAuth)) {
@@ -22,6 +22,7 @@ public class DonorDB {
             preparedStatement.setString(4, location);
             preparedStatement.setString(5, usertype);
             preparedStatement.setString(6, phoneno);
+            preparedStatement.setString(7, "NA");
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -39,6 +40,8 @@ public class DonorDB {
             prepStmtDUD.setString(3, location);
             prepStmtDUD.setString(4, usertype);
             prepStmtDUD.setString(5, phoneno);
+            prepStmtDUD.setString(6, "NA");
+            prepStmtDUD.setString(7, "None made");
 
             int rowsAffected2 = prepStmtDUD.executeUpdate();
             if (rowsAffected2 > 0){
@@ -67,7 +70,7 @@ public class DonorDB {
     }
 
     //Lists the donors and their donations on the admin page
-    public static void listDonors() throws SQLException{
+    public static ArrayList listDonors() throws SQLException{
         String selectSQL = "SELECT * FROM Donor_UD";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
@@ -85,6 +88,7 @@ public class DonorDB {
                 donorArray.add(new Donors(username, email, phone, location, status, donationType));
             }
         }
+        return donorArray;
     }
 }
 

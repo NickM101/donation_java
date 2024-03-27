@@ -83,8 +83,10 @@ public class RecipientDB {
                 String location = resultSet.getString("location");
                 String status = resultSet.getString("status");
                 String requestType = resultSet.getString("requestType");
+                String userType = resultSet.getString("usertype");
+                String orgWeb = resultSet.getString("orgWeb");
 
-                recipientArray.add(new Recipients(username, email, phone, location, status, requestType));
+                recipientArray.add(new Recipients(username, email, phone, location, status, requestType, orgWeb));
             }
         }
 
@@ -94,15 +96,16 @@ public class RecipientDB {
 
 //The class below holds the recipients details from the DB
 class Recipients {
-    private String username, email, phone, location, status, requestType;
+    private String username, email, phone, location, status, requestType, orgWeb;
 
-    public Recipients(String username, String email, String phone, String location, String status, String requestType){
+    public Recipients(String username, String email, String phone, String location, String status, String requestType, String orgWeb){
         this.username = username;
         this.email = email;
         this.phone = phone;
         this.location = location;
         this.status = status;
         this.requestType = requestType;
+        this.orgWeb = orgWeb;
     }
 
     public String getUsername() {
