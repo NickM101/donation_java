@@ -61,6 +61,8 @@ public class AuthenticationController {
                 case "Recipient":
                     navigationToDashboard("Recipient", RECIPIENT_DASHBOARD_FXML, actionEvent);
                     break;
+                default:
+                    error_msg.setText("User not found. Please register");
             }
 
         } else {
