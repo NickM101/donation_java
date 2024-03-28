@@ -64,6 +64,11 @@
             <artifactId>javafx-graphics</artifactId>
             <version>21</version>
         </dependency>
+        <dependency>
+            <groupId>org.groupwork</groupId>
+            <artifactId>Donation</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
 
     </dependencies>

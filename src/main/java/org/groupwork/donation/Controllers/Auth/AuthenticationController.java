@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.groupwork.donation.Models.Model;
 import org.groupwork.donation.Models.UserModel;
 
 import java.io.IOException;
@@ -132,6 +131,8 @@ public class AuthenticationController {
 
             // Create a new stage and set the scene
             Stage stage = new Stage();
+            stage.setMinHeight(900.0);
+            stage.setMinWidth(1500);
             stage.setTitle(name + " Dashboard");
             stage.getIcons().add(new Image(ImageClass));
             stage.setScene(new Scene(root));

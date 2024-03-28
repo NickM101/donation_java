@@ -9,7 +9,7 @@ public class DonorDB {
         String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo) VALUES (?,?,?,?,?,?)";
         String inDonor = "INSERT INTO Donor_UD (Email, Username, Location, UserType, PhoneNo) VALUES (?,?,?,?,?)";
 
-        try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Models.JDBC_URL, Models.USERNAME, Models.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(inAuth)) {
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, username);
@@ -27,8 +27,8 @@ public class DonorDB {
             e.printStackTrace();
         }
 
-        try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
-            PreparedStatement prepStmtDUD = connection.prepareStatement(inDonor)){
+        try (Connection connection = DriverManager.getConnection(Models.JDBC_URL, Models.USERNAME, Models.PASSWORD);
+             PreparedStatement prepStmtDUD = connection.prepareStatement(inDonor)){
             prepStmtDUD.setString(1, email);
             prepStmtDUD.setString(2, username);
             prepStmtDUD.setString(3, location);

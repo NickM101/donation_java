@@ -12,6 +12,6 @@ module org.groupwork.donation {
     exports org.groupwork.donation.Models;
     exports org.groupwork.donation.Views;
     exports org.groupwork.donation.Controllers.Admin;
-    exports org.groupwork.donation.Controllers.Client;
+    exports org.groupwork.donation.Controllers.Donor;
     exports org.groupwork.donation.Controllers.Auth;
 }

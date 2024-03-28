@@ -85,27 +85,50 @@ public class UserModel {
         return userDetails;
     }
 
-    public static List<Map<String, String>> getAllUsers() {
-        String query = "SELECT * FROM Donation_App_UD";
-        List<Map<String, String>> allUsers = new ArrayList<>();
+    public static List<Map<String, String>> getUsersByUserType(String userType) {
+        String query = "SELECT * FROM Donation_App_UD WHERE UserType = ?";
+        List<Map<String, String>> users = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, userType);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ResponseArray(users, resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving users by userType: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public static List<Map<String, String>> getInactiveVerifiedRecipients() {
+        String query = "SELECT * FROM Donation_App_UD WHERE UserType = 'Recipient' AND Verified = false";
+        List<Map<String, String>> recipients = new ArrayList<>();
 
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                Map<String, String> user = new HashMap<>();
-                user.put("Email", resultSet.getString("Email"));
-                user.put("Username", resultSet.getString("Username"));
-                user.put("Location", resultSet.getString("Location"));
-                user.put("UserType", resultSet.getString("UserType"));
-                user.put("PhoneNo", resultSet.getString("PhoneNo"));
-                allUsers.add(user);
-            }
+            ResponseArray(recipients, resultSet);
         } catch (SQLException e) {
-            System.out.println("Error retrieving all users");
+            System.out.println("Error retrieving inactive verified recipients: " + e.getMessage());
             e.printStackTrace();
         }
 
-        return allUsers;
+        return recipients;
     }
+
+    private static void ResponseArray(List<Map<String, String>> recipients, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Map<String, String> recipient = new HashMap<>();
+            recipient.put("Email", resultSet.getString("Email"));
+            recipient.put("Username", resultSet.getString("Username"));
+            recipient.put("Location", resultSet.getString("Location"));
+            recipient.put("PhoneNo", resultSet.getString("PhoneNo"));
+            recipients.add(recipient);
+        }
+    }
+
 }

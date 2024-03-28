@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.groupwork.donation.Models.Model;
+import org.groupwork.donation.Models.Models;
+import org.groupwork.donation.Views.ViewFactory;
 
 import java.io.InputStream;
 
@@ -16,7 +17,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Model.initializeDB();
+        Models.initializeDB();
+        ViewFactory viewFactory = new ViewFactory();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Auth/Authentication.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.getIcons().add(new Image(ImageClass));
