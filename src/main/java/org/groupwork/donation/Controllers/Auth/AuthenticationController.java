@@ -1,150 +1,127 @@
 package org.groupwork.donation.Controllers.Auth;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.groupwork.donation.Models.UserModel;
+import org.groupwork.donation.Models.Model;
+import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class AuthenticationController {
-    private Stage primaryStage = new Stage();
+public class AuthenticationController implements Initializable {
+
+    @FXML
+    public VBox register_recipient_button = new VBox();
+    @FXML
+    public VBox register_donor_button = new VBox();
+    public FontIcon auth_button = new FontIcon();
+    @FXML
+    public Button register_choice_button = new Button();
+    public FontIcon font_register_choice_button = new FontIcon();
+    public TextField username_field;
+    public TextField phone_number_field;
+    public TextField location_field;
+    public TextField website_field;
+
     @FXML
     private TextField email_field;
 
     @FXML
     private PasswordField password_field;
 
-    @FXML
-    private Label error_msg;
-    @FXML
-    private ProgressIndicator loadingIndicator;
-
-    @FXML
-    private Pane content_area;
-
-    private BooleanProperty loading = new SimpleBooleanProperty(false);
-
-    public boolean isLoading() {
-        return loading.get();
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        addListeners();
     }
 
-    public BooleanProperty loadingProperty() {
-        return loading;
+    private void addListeners() {
+        auth_button.setOnMouseClicked(event -> onAuthentication());
+        register_choice_button.setOnAction(event -> onRegisterChoice());
+        font_register_choice_button.setOnMouseClicked(event -> onRegisterChoice());
+        register_donor_button.setOnMouseClicked(event -> onRegisterDonor());
+        register_recipient_button.setOnMouseClicked(event -> onRegisterRecipient());
     }
 
-    public void setLoading(boolean isLoading) {
-        loading.set(isLoading);
+    private void onAuthentication() {
+        Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("Authentication");
     }
 
-    public void setError(String error) {
-        System.out.println(error_msg);
-        error_msg.setText(error);
+    private void onRegisterChoice() {
+        Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("RegisterChoice");
     }
 
+    private void onRegisterDonor() {
+        Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("RegisterDonor");
+    }
 
-    public String LOGIN_FXML = "/fxml/Auth/Login.fxml";
-    public String REGISTER_CHOICE_FXML = "/fxml/Auth/RegisterChoice.fxml";
-    public String REGISTER_DONOR_FXML = "/fxml/Auth/RegisterDonor.fxml";
-    public String REGISTER_RECIPIENT_FXML = "/fxml/Auth/RegisterRecipient.fxml";
-    public String ADMIN_DASHBOARD_FXML = "/fxml/Admin/Admin.fxml";
-    public String DONOR_DASHBOARD_FXML = "/fxml/Donor/Donor.fxml";
-    public String RECIPIENT_DASHBOARD_FXML = "/fxml/Recipient/Recipient.fxml";
+    private void onRegisterRecipient() {
+        Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("RegisterRecipient");
+    }
 
-    public void handleLogin(ActionEvent actionEvent) {
-        if(!email_field.getText().isBlank() && !password_field.getText().isBlank()){
-            setLoading(true);
-            String userType = UserModel.loginUser(email_field.getText(), password_field.getText());
-            setLoading(false);
-            switch (userType) {
-                case "Admin":
-                    navigationToDashboard("Admin", ADMIN_DASHBOARD_FXML, actionEvent);
-                    break;
-                case "Donor":
-                    navigationToDashboard("Donor", DONOR_DASHBOARD_FXML, actionEvent);
-                    break;
-                case "Recipient":
-                    navigationToDashboard("Recipient", RECIPIENT_DASHBOARD_FXML, actionEvent);
-                    break;
-                default:
-                    error_msg.setText("User not found. Please register");
+    public void handleLogin(ActionEvent actionEvent) throws SQLException {
+        Stage stage = (Stage)register_choice_button.getScene().getWindow();
+        if (!email_field.getText().isBlank() && !password_field.getText().isBlank()) {
+            Model.getInstance().validateUserCredentials(email_field.getText(), password_field.getText());
+            String type = Model.getInstance().isUserLoggedIn();
+            switch (type) {
+                case "Admin" -> {
+                    Model.getInstance().getViewFactory().closeStageWithoutAlert(stage);
+                    Model.getInstance().getViewFactory().showAdminWindow();
+                }
+                case "Donor" -> {
+                    Model.getInstance().getViewFactory().closeStageWithoutAlert(stage);
+                    Model.getInstance().getViewFactory().showDonorWindow();
+                }
+                case "Recipient" -> {
+                    Model.getInstance().getViewFactory().closeStageWithoutAlert(stage);
+                    Model.getInstance().getViewFactory().showRecipientWindow();
+                }
+                default -> {}
             }
         } else {
-            error_msg.setText("Enter missing fields to login.");
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Enter missing fields to login.");
+            errorAlert.showAndWait();
         }
     }
 
-    public void handleSignUp(ActionEvent actionEvent) { navigateTo(REGISTER_CHOICE_FXML); }
-    public void handleBackToLogin(MouseEvent mouseEvent) { navigateTo(LOGIN_FXML); }
-    public void handleDonorRegistration(MouseEvent mouseEvent) {
-        navigateTo(REGISTER_DONOR_FXML);
-    }
-    public void handleRecipientRegistration(MouseEvent mouseEvent) {
-        navigateTo(REGISTER_RECIPIENT_FXML);
-    }
+    public void registerDonor(ActionEvent event) throws SQLException {
+        String email = email_field.getText();
+        String password = password_field.getText();
+        String username = username_field.getText();
+        String phone_number = phone_number_field.getText();
+        String location = location_field.getText();
 
-    public void registerDonor(ActionEvent event){
-        UserModel.registerUser("bruce@mail.com", "bruce","12345", "Chuka", "Donor", "0707712344", "website.co.ke" );
-    }
-    public void handleBackToChoice(MouseEvent mouseEvent) {
-        navigateTo(REGISTER_CHOICE_FXML);
-    }
-
-    private void navigateTo(String fxmlFile) {
-        try {
-            // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Pane newContentPane = loader.load();
-
-            // Set the loaded content onto the content Pane
-            content_area.getChildren().setAll(newContentPane);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!email.isBlank() && !password.isBlank() && !username.isBlank() && !phone_number.isBlank() && !location.isBlank()) {
+            Model.getInstance().registerNewUser(email, username, password, location, "Donor", phone_number, "");
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Enter missing fields.");
+            errorAlert.showAndWait();
         }
     }
 
-    public void navigationToDashboard(String name, String fxmlFile, ActionEvent event) {
-        final String ICON_IMAGE = "/Images/donation_app.png";
-        InputStream ImageClass = getClass().getResourceAsStream(ICON_IMAGE);
-        try {
-            // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+    public void registerRecipient(ActionEvent event) throws SQLException {
+        String email = email_field.getText();
+        String password = password_field.getText();
+        String username = username_field.getText();
+        String phone_number = phone_number_field.getText();
+        String location = location_field.getText();
+        String website = website_field.getText();
 
-            Pane root = loader.load();
-            System.out.println("Navigation Auth");
-            Node  source = (Node)  event.getSource();
-            Stage prev_stage  = (Stage) source.getScene().getWindow();
-            prev_stage.close();
-
-            // Create a new stage and set the scene
-            Stage stage = new Stage();
-            stage.setMinHeight(900.0);
-            stage.setMinWidth(1500);
-            stage.setTitle(name + " Dashboard");
-            stage.getIcons().add(new Image(ImageClass));
-            stage.setScene(new Scene(root));
-
-
-            // Show the stage
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!email.isBlank() && !password.isBlank() && !username.isBlank() && !phone_number.isBlank() && !location.isBlank()) {
+            Model.getInstance().registerNewUser(email, username, password, location, "Recipient", phone_number, website);
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setContentText("Enter missing fields.");
+            errorAlert.showAndWait();
         }
     }
-
 
 
 }

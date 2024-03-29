@@ -1,46 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.control.ProgressIndicator?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.groupwork.donation.Controllers.Auth.AuthenticationController">
-    <children>
-        <TextField fx:id="email_field" layoutX="93.0" layoutY="189.0" prefHeight="50.0" prefWidth="400.0" promptText="Email Address" />
-        <PasswordField fx:id="password_field" layoutX="93.0" layoutY="266.0" prefHeight="50.0" prefWidth="400.0" promptText="Password" />
-        <Button layoutX="95.0" layoutY="341.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="43.0" prefWidth="401.0" text="Log In">
-            <ProgressIndicator fx:id="loadingIndicator" visible="${controller.loading}" />
-            <font>
-                <Font name="DejaVu Sans Bold" size="13.0" />
-            </font>
-        </Button>
-        <Button layoutX="91.0" layoutY="416.0" mnemonicParsing="false" onAction="#handleSignUp" prefHeight="40.0" prefWidth="400.0" styleClass="register_button" stylesheets="@../../Styles/Auth.css" text="Don't have an account? Sign up" />
-        <ImageView fitHeight="76.0" fitWidth="96.0" layoutX="97.0" layoutY="14.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../../Images/donation_app.png" />
-            </image>
-        </ImageView>
-        <Label layoutX="97.0" layoutY="132.0" text="Sign in to continue">
-            <font>
-                <Font name="DejaVu Sans Bold" size="14.0" />
-            </font>
-        </Label>
-        <Label fx:id="welcome_msg" alignment="CENTER" layoutX="97.0" layoutY="90.0" text="Welcome Back">
-            <font>
-                <Font name="DejaVu Sans Bold" size="24.0" />
-            </font>
-        </Label>
-      <HBox alignment="CENTER" layoutX="30.0" layoutY="155.0" prefHeight="30.0" prefWidth="541.0">
-         <children>
-            <Label fx:id="error_msg" textAlignment="CENTER" textFill="RED" />
-         </children>
-      </HBox>
-    </children>
+<?import javafx.scene.layout.BorderPane?>
+<AnchorPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.groupwork.donation.Controllers.Auth.LoginController">
+    <BorderPane fx:id="auth_parent">
+        <left>
+            <fx:include source="LogoBadge.fxml"/>
+        </left>
+        <center>
+            <fx:include source="Authentication.fxml"/>
+        </center>
+    </BorderPane>
 </AnchorPane>

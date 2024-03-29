@@ -21,12 +21,14 @@ public class DatabaseDriver {
         }
     }
 
-    public Connection getConnection() throws SQLException {
-        Statement statement;
-
-        statement = connection.createStatement();
-
-        return (Connection) statement;
+    Connection connect() {
+        Connection connect = null;
+        try {
+            connect = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            System.out.println("Error occurred in connect method: "+e.getMessage());
+        }
+        return connect;
     }
 
     public void closeConnection() {

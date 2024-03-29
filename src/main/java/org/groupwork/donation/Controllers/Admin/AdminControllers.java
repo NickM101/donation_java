@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.groupwork.donation.Models.UserModel;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,40 +58,40 @@ public class AdminControllers {
     public VBox parentVBox = new VBox();
 
     public void initialize() {
-    // Fetch users asynchronously to prevent blocking the UI thread
-        // Show loading indicator
-        Label loadingLabel = new Label("Loading..");
-        ImageView loadingImageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/charity.png")));
-        loadingImageView.setFitWidth(50); // Adjust size as needed
-        loadingImageView.setFitHeight(50);
-
-        VBox loadingIndicator = new VBox(10, loadingLabel, loadingImageView);
-        loadingIndicator.setAlignment(CENTER);
-        parentVBox.getChildren().add(loadingIndicator);
-
-        new Thread(() -> {
-            List<Map<String, String>> users = UserModel.getUsersByUserType("Donor");
-            for (Map<String, String> user : users) {
-                // Sample data for demonstration
-                String name = user.get("Username");
-                String email = user.get("Email");
-                String phoneNumber = user.get("PhoneNO");
-                String location = user.get("Location");
-                String joinedDate = "2024-03-25";
-
-                // Create an HBox using the createVBox method
-                HBox hbox = createVBox(name, email, phoneNumber, location, joinedDate);
-
-                // Update the UI on the JavaFX Application Thread
-                Platform.runLater(() -> {
-                    // Remove loading indicator
-                    parentVBox.getChildren().remove(loadingIndicator);
-
-                    // Add the created HBox to the parent VBox
-                    parentVBox.getChildren().add(hbox);
-                });
-            }
-        }).start();
+//    // Fetch users asynchronously to prevent blocking the UI thread
+//        // Show loading indicator
+//        Label loadingLabel = new Label("Loading..");
+//        ImageView loadingImageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/charity.png")));
+//        loadingImageView.setFitWidth(50); // Adjust size as needed
+//        loadingImageView.setFitHeight(50);
+//
+//        VBox loadingIndicator = new VBox(10, loadingLabel, loadingImageView);
+//        loadingIndicator.setAlignment(CENTER);
+//        parentVBox.getChildren().add(loadingIndicator);
+//
+//        new Thread(() -> {
+//            List<Map<String, String>> users = UserModel.getUsersByUserType("Donor");
+//            for (Map<String, String> user : users) {
+//                // Sample data for demonstration
+//                String name = user.get("Username");
+//                String email = user.get("Email");
+//                String phoneNumber = user.get("PhoneNO");
+//                String location = user.get("Location");
+//                String joinedDate = "2024-03-25";
+//
+//                // Create an HBox using the createVBox method
+//                HBox hbox = createVBox(name, email, phoneNumber, location, joinedDate);
+//
+//                // Update the UI on the JavaFX Application Thread
+//                Platform.runLater(() -> {
+//                    // Remove loading indicator
+//                    parentVBox.getChildren().remove(loadingIndicator);
+//
+//                    // Add the created HBox to the parent VBox
+//                    parentVBox.getChildren().add(hbox);
+//                });
+//            }
+//        }).start();
     }
 
 

@@ -12,44 +12,41 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="content_area" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" styleClass="auth_container"
-            stylesheets="@../../Styles/Auth.css" xmlns="http://javafx.com/javafx/21"
+<AnchorPane  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="700.0" prefWidth="600.0" styleClass="auth_container" stylesheets="@../../Styles/Auth.css"
+            xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.groupwork.donation.Controllers.Auth.AuthenticationController">
-   <children>
-      <FontIcon iconLiteral="fas-chevron-left" iconSize="24" layoutX="25.0" layoutY="45.0" onMouseClicked="#handleBackToChoice" />
-      <ImageView fitHeight="76.0" fitWidth="96.0" layoutX="60.0" layoutY="76.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../Images/donation_app.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="60.0" layoutY="191.0" text="Fill the form for registration">
+   <FontIcon iconLiteral="fas-chevron-left" iconSize="24" layoutX="25.0" layoutY="45.0"
+             fx:id="font_register_choice_button" />
+   <ImageView fitHeight="76.0" fitWidth="96.0" layoutX="89.0" layoutY="65.0" nodeOrientation="INHERIT"
+              pickOnBounds="true" preserveRatio="true">
+      <Image url="@../../Images/donation_app.png"/>
+   </ImageView>
+   <Label alignment="CENTER" layoutX="89.0" layoutY="141.0" text="Register Form">
+      <font>
+         <Font name="DejaVu Sans Bold" size="24.0"/>
+      </font>
+   </Label>
+   <Label layoutX="89.0" layoutY="180.0" text="Fill the form for registration">
+      <font>
+         <Font name="DejaVu Sans Bold" size="14.0"/>
+      </font>
+   </Label>
+   <VBox alignment="CENTER" layoutX="67.0" layoutY="198.0" prefHeight="438.0" prefWidth="442.0" spacing="20.0"
+         AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="80.0">
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+      </padding>
+      <TextField prefHeight="50.0" prefWidth="450.0" promptText="Organization Name" fx:id="username_field" />
+      <PasswordField prefHeight="50.0" prefWidth="450.0" promptText="Password" fx:id="password_field"/>
+      <TextField prefHeight="50.0" prefWidth="450.0" promptText="Email Address"  fx:id="email_field"/>
+      <TextField prefHeight="50.0" prefWidth="450.0" promptText="Phone Number" fx:id="phone_number_field"/>
+      <TextField prefHeight="50.0" prefWidth="450.0" promptText="Location" fx:id="location_field"/>
+      <TextField prefHeight="50.0" prefWidth="450.0" promptText="Website or Social Media Links" fx:id="website_field"/>
+      <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="450.0" text="Register" onAction="#registerRecipient">
          <font>
-            <Font name="DejaVu Sans Bold" size="14.0" />
+            <Font name="DejaVu Sans Bold" size="13.0"/>
          </font>
-      </Label>
-      <Label alignment="CENTER" layoutX="60.0" layoutY="152.0" text="Register Form">
-         <font>
-            <Font name="DejaVu Sans Bold" size="24.0" />
-         </font>
-      </Label>
-      <VBox alignment="CENTER" layoutX="67.0" layoutY="198.0" prefHeight="438.0" prefWidth="442.0" spacing="20.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="80.0">
-         <children>
-            <TextField prefHeight="50.0" prefWidth="450.0" promptText="Organization Name" />
-            <PasswordField prefHeight="50.0" prefWidth="450.0" promptText="Password" />
-            <TextField prefHeight="50.0" prefWidth="450.0" promptText="Email Address" />
-            <TextField prefHeight="50.0" prefWidth="450.0" promptText="Phone Number" />
-            <TextField prefHeight="50.0" prefWidth="450.0" promptText="Location" />
-            <TextField prefHeight="50.0" prefWidth="450.0" promptText="Website or Social Media Links" />
-            <Button mnemonicParsing="false" prefHeight="43.0" prefWidth="450.0" text="Register">
-               <font>
-                  <Font name="DejaVu Sans Bold" size="13.0" />
-               </font>
-            </Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </VBox>
-   </children>
+      </Button>
+   </VBox>
 </AnchorPane>

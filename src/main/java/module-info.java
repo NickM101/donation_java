@@ -4,6 +4,7 @@ module org.groupwork.donation {
     requires java.sql;
     requires org.xerial.sqlitejdbc;
     requires mysql.connector.j;
+    requires org.kordamp.ikonli.javafx;
 
     opens org.groupwork.donation to javafx.fxml;
     opens org.groupwork.donation.Controllers.Auth to javafx.fxml;

@@ -1,29 +1,41 @@
 package org.groupwork.donation;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.groupwork.donation.Models.Models;
-import org.groupwork.donation.Views.ViewFactory;
-
-import java.io.InputStream;
+import org.groupwork.donation.Models.Model;
 
 public class App extends Application {
-
-    private final String ICON_IMAGE = "/Images/donation_app.png";
-    InputStream ImageClass = getClass().getResourceAsStream(ICON_IMAGE);
-
+    public static void main(String[] args){
+        launch(args);
+    }
     @Override
-    public void start(Stage stage) throws Exception {
-        Models.initializeDB();
-        ViewFactory viewFactory = new ViewFactory();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Auth/Authentication.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.getIcons().add(new Image(ImageClass));
-        stage.setTitle("Welcome Screen");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage stage) {
+
+        Model.getInstance().getViewFactory().showLoginWindow();
+
+        stage.setOnCloseRequest(e -> {
+            e.consume();
+            exitApp(stage);
+        });
+    }
+
+
+    public void exitApp(Stage stage){
+        // Close Alert
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Close App");
+        alert.setHeaderText("Are You Sure You Want to Exit?");
+        if(alert.showAndWait().get() == ButtonType.OK){
+            try {
+                Platform.exit();
+                stage.close();
+            }catch (Exception e){
+                // System.out.println(e);
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -13,7 +13,6 @@ public class AdminController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Model.getInstance().getViewFactory().getAdminSelectedMenuItem().addListener(((observableValue, oldValue, newValue) -> {
-            System.out.println(newValue);
             switch (newValue){
                 case "VerifyAccounts" -> admin_parent.setCenter(Model.getInstance().getViewFactory().getVerifyAccountsView());
                 case "TotalDonors" -> admin_parent.setCenter(Model.getInstance().getViewFactory().getTotalDonorsView());

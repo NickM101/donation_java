@@ -4,7 +4,6 @@ package org.groupwork.donation.Controllers.Admin;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -12,14 +11,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import org.groupwork.donation.Models.UserModel;
+import org.groupwork.donation.Models.Model;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import static javafx.geometry.Pos.CENTER;
+import static javafx.geometry.Pos.CENTER_LEFT;
 
 public class TotalDonorsController implements Initializable {
 
@@ -28,17 +29,20 @@ public class TotalDonorsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Label loadingLabel = new Label("Loading...");
-        ImageView loadingImageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/charity.png")));
-        loadingImageView.setFitWidth(50); // Adjust size as needed
-        loadingImageView.setFitHeight(50);
+        InputStream image = getClass().getResourceAsStream("/Images/charity.png");
+        assert image != null;
+        ImageView loadingImageView = new ImageView(new Image(image));
+        Label loadingLabel = new Label("Loading Donors...");
+        loadingImageView.setFitWidth(100);
+        loadingImageView.setFitHeight(100);
 
-        VBox loadingIndicator = new VBox(10, loadingLabel, loadingImageView);
+        VBox loadingIndicator = new VBox(loadingLabel, loadingImageView);
+        loadingIndicator.fillWidthProperty();
+        loadingIndicator.maxHeight(700);
         loadingIndicator.setAlignment(CENTER);
         parentVBox.getChildren().add(loadingIndicator);
-
         new Thread(() -> {
-            List<Map<String, String>> users = UserModel.getUsersByUserType("Donor");
+            List<Map<String, String>> users = Model.getUsersByUserType("Donor");
             for (Map<String, String> user : users) {
                 // Sample data for demonstration
                 String name = user.get("Username");
@@ -66,14 +70,14 @@ public class TotalDonorsController implements Initializable {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
 
-        hbox.setPrefSize(970, 72);
-        hbox.setStyle("-fx-border-color: gray; -fx-border-radius: 10; -fx-alignment: center; -fx-padding: 10; ");
+        hbox.setPrefSize(970, 70);
+        hbox.setStyle("-fx-border-color: gray; -fx-border-radius: 10; -fx-alignment: center; -fx-padding: 10; -fx-background-color: white");
 
         // First VBox
         VBox vBox1 = new VBox();
         vBox1.setPrefSize(284, 70);
         vBox1.setSpacing(10);
-        vBox1.setAlignment(CENTER);
+        vBox1.setAlignment(CENTER_LEFT);
         Label nameLabel = new Label(name);
         nameLabel.setFont(new Font("DejaVu Sans Bold", 18));
         Label phoneLabel = new Label(phoneNumber);
