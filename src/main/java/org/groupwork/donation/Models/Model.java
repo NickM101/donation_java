@@ -1,154 +1,200 @@
 package org.groupwork.donation.Models;
 
+import javafx.scene.control.Alert;
 import org.groupwork.donation.Controllers.Auth.AuthenticationController;
+import org.groupwork.donation.Views.ViewFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.groupwork.donation.Controllers.Admin.AdminControllers;
-import org.groupwork.donation.Controllers.Auth.AuthenticationController;
-
-
 public class Model {
-    public static final String JDBC_URL = "jdbc:mysql://sql11.freesqldatabase.com:3306/sql11693731";
-    public static final String USERNAME = "sql11693731";
-    public static final String PASSWORD = "fzBx8RdtCU";
-    public static String userEmail;
-    public static String userType;
+    private static Model model;
+    public static DatabaseDriver databaseDriver;
+    private final ViewFactory viewFactory;
+    // user
+    private User user;
+    private String isUserLoggedIn;
 
-    public static void initializeDB(){
-        try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            System.out.println("DB Connection established");
-        } catch (SQLException e) {
-            e.printStackTrace();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Model() {
+        this.viewFactory = new ViewFactory();
+        databaseDriver = new DatabaseDriver();
+
+        this.isUserLoggedIn = null;
+
+        this.user = new User("", "", "", "", "", "");
     }
 
-
-
-    //The following method verifies user details at login and opens the appropriate interface
-    public static void loginUser(String email, String password) {
-        // Check if the user exists in the database
-        boolean userExists = checkUserExists(email, password);
-
-        if (userExists) {
-            // Retrieve user type from the database
-            userType = getUserType(email);
-            userEmail = email;
-
-        } else {
-            AuthenticationController controller = new AuthenticationController();
-//            controller.setError("User not found. Please register.");
-//            System.out.println("User not found. Please register.");
-            // Prompt the user to register
-            // Implement registerUser method or display a registration form
+    public static synchronized Model getInstance() {
+        if (model == null) {
+            model = new Model();
         }
+        return model;
     }
 
-    //The following method checks if a user is present on the database
-    private static boolean checkUserExists(String email, String password) {
-        String query = "SELECT COUNT(*) FROM Donation_App_UD WHERE Email = ? AND Password = ?";
-        boolean userExists = false;
+    public ViewFactory getViewFactory() {
+        return viewFactory;
+    }
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+    public DatabaseDriver getDatabaseDriver() {
+        return databaseDriver;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String isUserLoggedIn() {
+        return isUserLoggedIn;
+    }
+
+    public void setUserLoggedIn(String userLoggedIn) {
+        isUserLoggedIn = userLoggedIn;
+    }
+
+    public void validateUserCredentials(String email, String password) throws SQLException {
+        String query = "SELECT * FROM Donation_App_UD WHERE Email = ? AND Password = ?";
+        AuthenticationController auth_controller = new AuthenticationController();
+        try (Connection connection = databaseDriver.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    userExists = count > 0;
+                    String email_address = resultSet.getString("Email");
+                    String username = resultSet.getString("Username");
+                    String location = resultSet.getString("Location");
+                    String userType = resultSet.getString("UserType");
+                    String phoneNo = resultSet.getString("PhoneNo");
+                    String website = resultSet.getString("Org_Website");
+                    User user = new User(email_address, username, location, userType, phoneNo, website);
+                    setUser(user);
+                    setUserLoggedIn(userType);
+                } else {
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setContentText("Wrong Credentials. Try Again.");
+                    errorAlert.showAndWait();
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error checking user existence.");
-            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Connection Failed");
+            errorAlert.setContentText("Contact service provider. Error occurred on application");
+            errorAlert.showAndWait();
+            System.out.println("Error occurred in validateUserCredentials: " + e);
+            throw e; // Rethrow the exception to propagate it to the caller
         }
-
-        return userExists;
     }
 
-    //The following method returns the usertype of the username provided
-    private static String getUserType(String email) {
-        String query = "SELECT UserType FROM Donation_App_UD WHERE Email = ?";
-        String userType = null;
+    public void registerNewUser(String email, String username, String password, String location, String userType, String phoneNo, String website) throws SQLException {
+        String insertSQL = "INSERT INTO Donation_App_UD(Email, Username, Password, Location, UserType, PhoneNo, Org_Website) VALUES (?,?,?,?,?,?,?)";
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = databaseDriver.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, location);
+            preparedStatement.setString(5, userType);
+            preparedStatement.setString(6, phoneNo);
+            preparedStatement.setString(7, website);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                Model.getInstance().getViewFactory().showLoginWindow();
+                System.out.println("User registered successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error registering user" + e);
+            throw e; // Rethrow the exception to propagate it to the caller
+        }
+    }
+
+
+    public static Map<String, String> getUserDetails(String email) {
+        String query = "SELECT * FROM Donation_App_UD WHERE Email = ?";
+        Map<String, String> userDetails = new HashMap<>();
+
+        try (Connection connection = databaseDriver.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    userType = resultSet.getString("UserType");
-                    System.out.println(userType);
+                    userDetails.put("Email", resultSet.getString("Email"));
+                    userDetails.put("Username", resultSet.getString("Username"));
+                    userDetails.put("Location", resultSet.getString("Location"));
+                    userDetails.put("UserType", resultSet.getString("UserType"));
+                    userDetails.put("PhoneNo", resultSet.getString("PhoneNo"));
+                    userDetails.put("Org_Website", resultSet.getString("Org_Website"));
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error retrieving user type.");
+            System.out.println("Error retrieving user details");
             e.printStackTrace();
         }
 
-        return userType;
+        return userDetails;
     }
 
+    public static List<Map<String, String>> getUsersByUserType(String userType) {
+        String query = "SELECT * FROM Donation_App_UD WHERE UserType = ?";
+        List<Map<String, String>> users = new ArrayList<>();
 
-    //The following method displays some user details in the dashboard
-    public static void displayUserDetails(String username) {
-        String query = "SELECT Username, UserType, Email, PhoneNo FROM Donation_App_UD WHERE Username = ?";
-
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        try (Connection connection = databaseDriver.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, userType);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                String retrievedUsername = resultSet.getString("username");
-                String userType = resultSet.getString("userType");
-                String email = resultSet.getString("email");
-                String phoneNo = resultSet.getString("phoneNo");
-
-                //Implementation of labels which utilise the above variables in the GUI
-
+                ResponseArray(users, resultSet);
             }
         } catch (SQLException e) {
-            System.out.println("Error retrieving user details.");
+            System.out.println("Error retrieving users by userType: " + e.getMessage());
             e.printStackTrace();
         }
+
+        return users;
     }
 
+    public static List<Map<String, String>> getInactiveVerifiedRecipients() {
+        String query = "SELECT * FROM Donation_App_UD WHERE UserType = 'Recipient' AND Verified = false";
+        List<Map<String, String>> recipients = new ArrayList<>();
 
-    /**
-     * The method below adds the donors and the recipients who
-     * have made donations and requests to two different maps
-     * to be shown on the admin page
-     * */
-    public static void donationsAndRequests(Map<String, String> donations, Map<String, String> requests) throws SQLException {
-
-        Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        String donorQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType = 'Donor' AND Donation != '-'";
-        String recipientQuery = "SELECT Username, Donation FROM Donation_App_UD WHERE UserType =  'Recipient' AND Donation != '-'";
-
-        try (PreparedStatement stmtDonor = connection.prepareStatement(donorQuery)){
-            ResultSet rsDonor = stmtDonor.executeQuery();
-            while (rsDonor.next()){
-                String username = rsDonor.getString("Username");
-                String donation = rsDonor.getString("Donation");
-                donations.put(username, donation);
-            }
+        try (Connection connection = databaseDriver.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            ResponseArray(recipients, resultSet);
+        } catch (SQLException e) {
+            System.out.println("Error retrieving inactive verified recipients: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        try (PreparedStatement stmtRecipient = connection.prepareStatement(recipientQuery)){
-            ResultSet rsRecipient = stmtRecipient.executeQuery();
-            while (rsRecipient.next()){
-                String username = rsRecipient.getString("Username");
-                String request = rsRecipient.getString("Request");
-                requests.put(username, request);
-            }
+        return recipients;
+    }
+
+    private static void ResponseArray(List<Map<String, String>> member, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Map<String, String> users = new HashMap<>();
+            users.put("Email", resultSet.getString("Email"));
+            users.put("Username", resultSet.getString("Username"));
+            users.put("Location", resultSet.getString("Location"));
+            users.put("PhoneNo", resultSet.getString("PhoneNo"));
+            users.put("UserType", resultSet.getString("UserType"));
+            users.put("Org_Website", resultSet.getString("Org_Website"));
+            member.add(users);
         }
     }
+
 }

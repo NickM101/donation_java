@@ -2,6 +2,13 @@ package org.groupwork.donation.Models;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.groupwork.donation.Models.Model.ResponseArray;
+import static org.groupwork.donation.Models.Model.databaseDriver;
+
 public class RecipientDB {
 
     public static ArrayList<Recipients> recipientArray = new ArrayList<>();
@@ -92,63 +99,25 @@ public class RecipientDB {
 
         return recipientArray;
     }
-}
 
-//The class below holds the recipients details from the DB
-class Recipients {
-    private String username, email, phone, location, status, requestType, orgWeb;
+    public static Map<String, String> getUsersByUserType(String userType) {
+        String query = "SELECT * FROM Recipient_UD WHERE requestType != ?";
+        Map<String, String> recipients = new LinkedHashMap<>();
 
-    public Recipients(String username, String email, String phone, String location, String status, String requestType, String orgWeb){
-        this.username = username;
-        this.email = email;
-        this.phone = phone;
-        this.location = location;
-        this.status = status;
-        this.requestType = requestType;
-        this.orgWeb = orgWeb;
-    }
+        try (Connection connection = databaseDriver.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "-");
 
-    public String getUsername() {
-        return username;
-    }
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    recipients.put(resultSet.getString("username"), resultSet.getString("requestType"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving recipients" + e.getMessage());
+            e.printStackTrace();
+        }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDonationType() {
-        return requestType;
+        return recipients;
     }
 }
