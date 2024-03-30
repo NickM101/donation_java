@@ -100,7 +100,7 @@ public class RecipientDB {
         return recipientArray;
     }
 
-    public static Map<String, String> getUsersByUserType(String userType) {
+    public static Map<String, String> recipientsRqsts(String userType) {
         String query = "SELECT * FROM Recipient_UD WHERE requestType != ?";
         Map<String, String> recipients = new LinkedHashMap<>();
 
