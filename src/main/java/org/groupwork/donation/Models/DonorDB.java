@@ -71,7 +71,7 @@ public class DonorDB {
 
     //Lists the donors and their donations on the admin page
     public static ArrayList listDonors() throws SQLException{
-        String selectSQL = "SELECT * FROM Donor_UD";
+        String selectSQL = "SELECT * FROM Donor_UD WHERE donationType != '-'";
 
         try (Connection connection = DriverManager.getConnection(Model.JDBC_URL, Model.USERNAME, Model.PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
