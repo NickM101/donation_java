@@ -21,7 +21,7 @@ public class DatabaseDriver {
         }
     }
 
-    Connection connect() {
+   public Connection connect() {
         Connection connect = null;
         try {
             connect = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);

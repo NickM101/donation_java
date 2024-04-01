@@ -29,12 +29,12 @@
          </Label>
       </VBox>
       <Button fx:id="dashboard_button" alignment="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-color: black; -fx-border-radius: 10;" text="Overview" />
-      <Button fx:id="verify_accounts_button" alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Verify Accounts" />
+<!--      <Button fx:id="verify_accounts_button" alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Verify Accounts" />-->
       <Button fx:id="total_donors_button" alignment="CENTER" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Donars" />
       <Button fx:id="total_recipients_button" alignment="CENTER" layoutX="10.0" layoutY="210.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Recipients" />
       <Button fx:id="total_donations_button" alignment="CENTER" layoutX="10.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #FEC802; -fx-border-radius: 10; -fx-border-color: black;" text="Total Donations" />
       <VBox prefHeight="115.0" prefWidth="250.0" />
-      <Button alignment="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="274.0" style="-fx-background-color: #FEC802; -fx-border-color: black; -fx-border-radius: 10;" text="Log out">
+      <Button alignment="CENTER" mnemonicParsing="false" prefHeight="48.0" prefWidth="274.0" style="-fx-background-color: #FEC802; -fx-border-color: black; -fx-border-radius: 10;" text="Log out" onAction="#handleLogOutUser">
          <graphic>
             <FontIcon iconLiteral="fas-sign-out-alt" iconSize="18" />
          </graphic>

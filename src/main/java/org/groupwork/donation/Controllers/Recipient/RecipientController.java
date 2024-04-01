@@ -1,8 +1,9 @@
-package org.groupwork.donation.Controllers.Admin;
+package org.groupwork.donation.Controllers.Recipient;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -14,24 +15,35 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import org.groupwork.donation.Models.Admin;
-import org.groupwork.donation.Models.Donor;
 import org.groupwork.donation.Models.Model;
+import org.groupwork.donation.Models.Recipient;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import static javafx.geometry.Pos.CENTER;
 import static javafx.geometry.Pos.CENTER_LEFT;
 
-public class DashboardController implements Initializable {
-    public ScrollPane pending_link;
-    public VBox parentVBox;
+public class RecipientController  implements Initializable {
+    @FXML
+    public ScrollPane total_donor_scrollable;
+    @FXML
+    public VBox parentVBox = new VBox();
+    @FXML
+    public ComboBox<String> combo_box = new ComboBox<>();
+
+    private final String[] donationTypes = { "Food", "Clothes", "Others" };
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        InputStream image = getClass().getResourceAsStream("/Images/donation_app.png");
+        combo_box.setItems(FXCollections.observableArrayList(donationTypes));
+
+        InputStream image = getClass().getResourceAsStream("/Images/charity.png");
         assert image != null;
         ImageView loadingImageView = new ImageView(new Image(image));
         Label loadingLabel = new Label("Loading Donors...");
@@ -43,68 +55,55 @@ public class DashboardController implements Initializable {
         loadingIndicator.maxHeight(700);
         loadingIndicator.setAlignment(CENTER);
         parentVBox.getChildren().add(loadingIndicator);
-
         new Thread(() -> {
-            // Retrieve recipients
-            List<Map<String, String>> recipients = Admin.recipientsRequests();
-            List<String> recipientNamesAndDonationTypes = new ArrayList<>();
-            for (Map<String, String> recipient : recipients) {
-                System.out.println("recipients"+recipient);
-                String name = recipient.get("username");
-                String donationType = recipient.get("requestType");
-                String recipientInfo = name + " - " + donationType;
-                recipientNamesAndDonationTypes.add(recipientInfo);
-            }
-
-            ComboBox<String> combo_box = new ComboBox<>(FXCollections.observableArrayList(recipientNamesAndDonationTypes));
-
-            List<Map<String, String>> donations = Donor.donationsMadeByDonor();
+            List<Map<String, String>> donations = Admin.totalDonations();
             for (Map<String, String> donation : donations) {
-                System.out.println("Donations"+donation);
                 // Sample data for demonstration
                 String name = donation.get("Username");
                 String email = donation.get("Email");
                 String phoneNumber = donation.get("PhoneNO");
                 String location = donation.get("Location");
+                String joinedDate = "2024-03-25";
 
                 // Create an HBox using the createVBox method
-                HBox hbox = createVBox(name, email, phoneNumber, location, combo_box);
+                HBox hbox = createVBox(name, email, phoneNumber, location, joinedDate);
 
                 // Update the UI on the JavaFX Application Thread
                 Platform.runLater(() -> {
                     // Remove loading indicator
                     parentVBox.getChildren().remove(loadingIndicator);
 
-                    hbox.setSpacing(10);
-
                     // Add the created HBox to the parent VBox
                     parentVBox.getChildren().add(hbox);
                 });
             }
-
-
         }).start();
-
-
-    }
-
-    public void handleLinkDonation(String selectedDonationType, String donorName) {
-    String[] splitDonationType = selectedDonationType.split("-");
-    String recipientName = splitDonationType[0];
-
-    Admin.combineData(donorName, recipientName);
-        System.out.println("Sending donation request for: " + recipientName + donorName);
     }
 
 
+    public void handleMakeRequest() {
+        String selectedDonationType = combo_box.getValue();
+        Recipient.addRequestTDB(selectedDonationType);
 
-    private HBox createVBox(String name, String email, String phoneNumber, String location, ComboBox<String> combo_box) {
-        System.out.println(combo_box.getItems());
+        System.out.println("Sending donation request for: " + selectedDonationType);
+    }
+
+    public void handleLogout(ActionEvent actionEvent) {
+        Stage stage = (Stage)combo_box.getScene().getWindow();
+
+        Model.getInstance().getViewFactory().closeStageWithoutAlert(stage);
+        Model.getInstance().LogOutUser();
+    }
+
+
+
+
+    private HBox createVBox(String name, String email, String phoneNumber, String location, String joinedDate) {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
 
         hbox.setPrefSize(970, 70);
-        hbox.setStyle("-fx-border-color: gray; -fx-border-radius: 10; -fx-alignment: center;");
+        hbox.setStyle("-fx-border-color: gray; -fx-border-radius: 10; -fx-alignment: center; -fx-padding: 10; -fx-background-color: white");
 
         // First VBox
         VBox vBox1 = new VBox();
@@ -132,17 +131,17 @@ public class DashboardController implements Initializable {
         VBox vBox3 = new VBox();
         vBox3.setAlignment(CENTER);
         vBox3.setPrefSize(218, 88);
-        ComboBox combo = new ComboBox<>((ObservableList<? extends Object>) combo_box.getItems());
-        vBox3.getChildren().addAll(combo);
+        Label locationLabel = new Label("Location");
+        Label locationText = new Label(location);
+        vBox3.getChildren().addAll(locationLabel, locationText);
         hbox.getChildren().add(vBox3);
 
         // Fourth VBox
         VBox vBox4 = new VBox();
         vBox4.setAlignment(CENTER);
         vBox4.setPrefSize(152, 88);
-        Button linkingButton = new Button("Link Donation");
-        linkingButton.setOnAction((actionEvent -> this.handleLinkDonation((String) combo.getValue(), name)));
-        vBox4.getChildren().addAll(linkingButton);
+        Button confirmButton = new Button("Confirm pickup");
+        vBox4.getChildren().addAll(confirmButton);
         hbox.getChildren().add(vBox4);
 
         return hbox;

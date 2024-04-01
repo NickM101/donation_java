@@ -1,7 +1,9 @@
 package org.groupwork.donation.Controllers.Admin;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 import org.groupwork.donation.Models.Model;
 
 import java.net.URL;
@@ -24,7 +26,7 @@ public class AdminMenuController implements Initializable {
 
     private void addListeners(){
         dashboard_button.setOnAction(event -> onDashboard());
-        verify_accounts_button.setOnAction(event -> onVerifyAccounts());
+//        verify_accounts_button.setOnAction(event -> onVerifyAccounts());
         total_donors_button.setOnAction(event -> onTotalDonors());
         total_donations_button.setOnAction(event -> onTotalDonations());
         total_recipients_button.setOnAction(event -> onTotalRecipients());
@@ -48,5 +50,12 @@ public class AdminMenuController implements Initializable {
 
     private void onTotalDonations(){
         Model.getInstance().getViewFactory().getAdminSelectedMenuItem().set("TotalDonations");
+    }
+
+    public void handleLogOutUser(ActionEvent actionEvent) {
+        Stage stage = (Stage)dashboard_button.getScene().getWindow();
+
+        Model.getInstance().getViewFactory().closeStageWithoutAlert(stage);
+        Model.getInstance().LogOutUser();
     }
 }

@@ -184,6 +184,11 @@ public class Model {
         return recipients;
     }
 
+    public void LogOutUser (){
+        this.user = new User("", "", "", "", "", "");
+        getViewFactory().showLoginWindow();
+    }
+
     private static void ResponseArray(List<Map<String, String>> member, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
             Map<String, String> users = new HashMap<>();
