@@ -86,29 +86,34 @@ public class Admin {
 
     // Method to update donor and recipient status based on combined table
     public static void updateDonorRecipientStatus(String donorUsername, String recipientUsername) {
-        String getStatusQuery = "SELECT status FROM `Assigned_Donors&Recipients` WHERE DonorUsername = ? AND RecipientUsername = ?";
-        String updateDonorRecipientStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?;" +
-                "UPDATE Recipient_UD SET status = ? WHERE username = ?;";
+        String getStatusQuery = "SELECT Status FROM `Assigned_Donors&Recipients` WHERE DonorUsername = ? AND RecipientUsername = ?";
+        String updateDonorStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?";
+        String updateRecipientStatusQuery = "UPDATE Recipient_UD SET status = ? WHERE username = ?";
 
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement getStatusStatement = connection.prepareStatement(getStatusQuery);
-             PreparedStatement updateDonorRecipientStatusStatement = connection.prepareStatement(updateDonorRecipientStatusQuery)) {
+             PreparedStatement updateDonorStatusStatement = connection.prepareStatement(updateDonorStatusQuery);
+             PreparedStatement updateRecipientStatusStatement = connection.prepareStatement(updateRecipientStatusQuery)) {
 
             // Retrieve status from combined table
             getStatusStatement.setString(1, donorUsername);
             getStatusStatement.setString(2, recipientUsername);
             ResultSet resultSet = getStatusStatement.executeQuery();
-            String status = null;
+            String status = "Leon";
             if (resultSet.next()) {
-                status = resultSet.getString("status");
+                status = resultSet.getString("Status");
+                System.out.println(status);
             }
 
-            // Update donor and recipient status
-            updateDonorRecipientStatusStatement.setString(1, status);
-            updateDonorRecipientStatusStatement.setString(2, donorUsername);
-            updateDonorRecipientStatusStatement.setString(3, status);
-            updateDonorRecipientStatusStatement.setString(4, recipientUsername);
-            updateDonorRecipientStatusStatement.executeUpdate();
+            // Update donor status
+            updateDonorStatusStatement.setString(1, status);
+            updateDonorStatusStatement.setString(2, donorUsername);
+            updateDonorStatusStatement.executeUpdate();
+
+            // Update recipient status
+            updateRecipientStatusStatement.setString(1, status);
+            updateRecipientStatusStatement.setString(2, recipientUsername);
+            updateRecipientStatusStatement.executeUpdate();
 
             System.out.println("Donor and recipient status updated successfully.");
 
