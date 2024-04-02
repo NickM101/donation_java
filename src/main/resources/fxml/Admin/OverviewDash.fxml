@@ -15,7 +15,7 @@
             <children>
                 <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="265.0">
                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hello Ariana,">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" fx:id="username_label">
                             <font>
                                 <Font name="DejaVu Sans Bold" size="36.0" />
                             </font>

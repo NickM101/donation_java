@@ -1,5 +1,7 @@
 package org.groupwork.donation.Models;
 
+import javafx.scene.control.Alert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +13,7 @@ import static org.groupwork.donation.Models.Donor.donorsArray;
 public class Admin {
 
     public static List<Map<String, String>> recipientsRequests() {
-        String query = "SELECT * FROM Recipient_UD WHERE requestType != ?";
+        String query = "SELECT * FROM Recipient_UD WHERE requestType != ? AND status = 'Active'";
         List<Map<String, String>> recipients = new ArrayList<>();
 
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
@@ -70,11 +72,16 @@ public class Admin {
                 combinedStatement.setString(4, recipientUsername);
                 combinedStatement.setString(5, recipientEmail);
                 combinedStatement.setString(6, requestType);
-                combinedStatement.setString(7, "-");
+                combinedStatement.setString(7, "Pending Pickup");
 
                 // Execute the insert query
                 combinedStatement.executeUpdate();
                 System.out.println("Data combined and inserted into the 'combined' table successfully.");
+                updateDonorRecipientStatus(donorUsername, recipientUsername);
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setContentText("Link successful");
+                errorAlert.showAndWait();
+
             } else {
                 System.out.println("Donor or recipient not found.");
             }
@@ -85,29 +92,36 @@ public class Admin {
 
     // Method to update donor and recipient status based on combined table
     public static void updateDonorRecipientStatus(String donorUsername, String recipientUsername) {
-        String getStatusQuery = "SELECT status FROM `Assigned_Donors&Recipients` WHERE DonorUsername = ? AND RecipientUsername = ?";
-        String updateDonorRecipientStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?;" +
-                "UPDATE Recipient_UD SET status = ? WHERE username = ?;";
+        String getStatusQuery = "SELECT Status FROM `Assigned_Donors&Recipients` WHERE DonorUsername = ? AND RecipientUsername = ?";
+        String updateDonorStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?";
+        String updateRecipientStatusQuery = "UPDATE Recipient_UD SET status = ? WHERE username = ?";
+
+
 
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement getStatusStatement = connection.prepareStatement(getStatusQuery);
-             PreparedStatement updateDonorRecipientStatusStatement = connection.prepareStatement(updateDonorRecipientStatusQuery)) {
+             PreparedStatement updateDonorStatusStatement = connection.prepareStatement(updateDonorStatusQuery);
+             PreparedStatement updateRecipientStatusStatement = connection.prepareStatement(updateRecipientStatusQuery)) {
 
             // Retrieve status from combined table
             getStatusStatement.setString(1, donorUsername);
             getStatusStatement.setString(2, recipientUsername);
             ResultSet resultSet = getStatusStatement.executeQuery();
-            String status = null;
+            String status = "";
             if (resultSet.next()) {
-                status = resultSet.getString("status");
+                status = resultSet.getString("Status");
+                System.out.println(status);
             }
 
-            // Update donor and recipient status
-            updateDonorRecipientStatusStatement.setString(1, status);
-            updateDonorRecipientStatusStatement.setString(2, donorUsername);
-            updateDonorRecipientStatusStatement.setString(3, status);
-            updateDonorRecipientStatusStatement.setString(4, recipientUsername);
-            updateDonorRecipientStatusStatement.executeUpdate();
+            // Update donor status
+            updateDonorStatusStatement.setString(1, status);
+            updateDonorStatusStatement.setString(2, donorUsername);
+            updateDonorStatusStatement.executeUpdate();
+
+            // Update recipient status
+            updateRecipientStatusStatement.setString(1, status);
+            updateRecipientStatusStatement.setString(2, recipientUsername);
+            updateRecipientStatusStatement.executeUpdate();
 
             System.out.println("Donor and recipient status updated successfully.");
 
@@ -117,16 +131,6 @@ public class Admin {
         }
     }
 
-    // Method to update status in combined table when recipient clicks complete
-    private void updateCombinedTableStatus(String recipientEmail) throws SQLException {
-        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
-        try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
-             PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
-            updateStatusStatement.setString(1, "Complete");
-            updateStatusStatement.setString(2, recipientEmail);
-            updateStatusStatement.executeUpdate();
-        }
-    }
 
 
     //Method below creates a list of total donations

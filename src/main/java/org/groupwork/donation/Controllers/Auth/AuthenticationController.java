@@ -6,7 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.groupwork.donation.Models.Donor;
 import org.groupwork.donation.Models.Model;
+import org.groupwork.donation.Models.Recipient;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -90,7 +92,7 @@ public class AuthenticationController implements Initializable {
         }
     }
 
-    public void registerDonor(ActionEvent event) throws SQLException {
+    public void registerDonor(ActionEvent event){
         String email = email_field.getText();
         String password = password_field.getText();
         String username = username_field.getText();
@@ -98,7 +100,8 @@ public class AuthenticationController implements Initializable {
         String location = location_field.getText();
 
         if(!email.isBlank() && !password.isBlank() && !username.isBlank() && !phone_number.isBlank() && !location.isBlank()) {
-            Model.getInstance().registerNewUser(email, username, password, location, "Donor", phone_number, "");
+            Donor.registerDonor(email, username, password, location, "Donor", phone_number);
+            Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("Authentication");
         } else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setContentText("Enter missing fields.");
@@ -106,7 +109,7 @@ public class AuthenticationController implements Initializable {
         }
     }
 
-    public void registerRecipient(ActionEvent event) throws SQLException {
+    public void registerRecipient(ActionEvent event) {
         String email = email_field.getText();
         String password = password_field.getText();
         String username = username_field.getText();
@@ -115,7 +118,8 @@ public class AuthenticationController implements Initializable {
         String website = website_field.getText();
 
         if(!email.isBlank() && !password.isBlank() && !username.isBlank() && !phone_number.isBlank() && !location.isBlank()) {
-            Model.getInstance().registerNewUser(email, username, password, location, "Recipient", phone_number, website);
+            Recipient.registerRecipient(email, username, password, location, "Recipient", phone_number, website);
+            Model.getInstance().getViewFactory().getAuthSelectedScenePane().set("Authentication");
         } else {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR);
             errorAlert.setContentText("Enter missing fields.");
