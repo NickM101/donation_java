@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class DonorDB {
 
     //donorArray : Contains objects of all the donors in the DB
-    public static ArrayList<Donors> donorArray = new ArrayList<>();
+    //public static ArrayList<Donors> donorArray = new ArrayList<>();
 
     //The method below adds a donor to the DB on registration. (TDB) To DataBase
     public static void addDonorTDB(String email, String username, String password, String location, String usertype, String phoneno){
