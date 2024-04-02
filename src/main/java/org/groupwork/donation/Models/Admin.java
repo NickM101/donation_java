@@ -1,5 +1,7 @@
 package org.groupwork.donation.Models;
 
+import javafx.scene.control.Alert;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +13,7 @@ import static org.groupwork.donation.Models.Donor.donorsArray;
 public class Admin {
 
     public static List<Map<String, String>> recipientsRequests() {
-        String query = "SELECT * FROM Recipient_UD WHERE requestType != ?";
+        String query = "SELECT * FROM Recipient_UD WHERE requestType != ? AND status = 'Active'";
         List<Map<String, String>> recipients = new ArrayList<>();
 
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
@@ -70,12 +72,16 @@ public class Admin {
                 combinedStatement.setString(4, recipientUsername);
                 combinedStatement.setString(5, recipientEmail);
                 combinedStatement.setString(6, requestType);
-                combinedStatement.setString(7, "-");
+                combinedStatement.setString(7, "Pending Pickup");
 
                 // Execute the insert query
                 combinedStatement.executeUpdate();
                 System.out.println("Data combined and inserted into the 'combined' table successfully.");
                 updateDonorRecipientStatus(donorUsername, recipientUsername);
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setContentText("Link successful");
+                errorAlert.showAndWait();
+
             } else {
                 System.out.println("Donor or recipient not found.");
             }
@@ -90,6 +96,8 @@ public class Admin {
         String updateDonorStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?";
         String updateRecipientStatusQuery = "UPDATE Recipient_UD SET status = ? WHERE username = ?";
 
+
+
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement getStatusStatement = connection.prepareStatement(getStatusQuery);
              PreparedStatement updateDonorStatusStatement = connection.prepareStatement(updateDonorStatusQuery);
@@ -99,7 +107,7 @@ public class Admin {
             getStatusStatement.setString(1, donorUsername);
             getStatusStatement.setString(2, recipientUsername);
             ResultSet resultSet = getStatusStatement.executeQuery();
-            String status = "Leon";
+            String status = "";
             if (resultSet.next()) {
                 status = resultSet.getString("Status");
                 System.out.println(status);

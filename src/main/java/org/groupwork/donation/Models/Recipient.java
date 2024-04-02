@@ -113,7 +113,7 @@ public class Recipient {
     // Method to update status in combined table when recipient clicks complete
     public static void markCompleteDonation(String recipientEmail, String donorUsername) {
         String recipient = Model.getInstance().getUser().getUsername();
-        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
+        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET Status = ? WHERE RecipientUsername = ?";
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
             updateStatusStatement.setString(1, "Complete");
