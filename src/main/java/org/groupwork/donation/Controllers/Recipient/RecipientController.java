@@ -61,17 +61,31 @@ public class RecipientController  implements Initializable {
         loadingIndicator.setAlignment(CENTER);
         parentVBox.getChildren().add(loadingIndicator);
         new Thread(() -> {
-            List<Map<String, String>> donations = Admin.totalDonations();
+            String user_email = Model.getInstance().getUser().getEmail();
+            List<Map<String, String>> donations = Recipient.requestsMade(user_email);
+
+            if(donations.isEmpty()){
+                HBox hbox = createVBox("", "");
+
+                Platform.runLater(() -> {
+                    // Remove loading indicator
+                    parentVBox.getChildren().remove(loadingIndicator);
+
+                    // Add the created HBox to the parent VBox
+                    parentVBox.getChildren().add(new VBox());
+                });
+            }
+
             for (Map<String, String> donation : donations) {
+
                 // Sample data for demonstration
-                String name = donation.get("Username");
-                String email = donation.get("Email");
-                String phoneNumber = donation.get("PhoneNO");
-                String location = donation.get("Location");
-                String joinedDate = "2024-03-25";
+                DonorUsername
+                String name = donation.get("DonorUsername");
+                String status = donation.get("Status");
+                String requestType = donation.get("Request");
 
                 // Create an HBox using the createVBox method
-                HBox hbox = createVBox(name, email, phoneNumber, location, joinedDate);
+                HBox hbox = createVBox(name, status, requestType);
 
                 // Update the UI on the JavaFX Application Thread
                 Platform.runLater(() -> {
@@ -82,8 +96,10 @@ public class RecipientController  implements Initializable {
                     parentVBox.getChildren().add(hbox);
                 });
             }
+
         }).start();
     }
+
 
 
     public void handleMakeRequest() {
@@ -100,15 +116,16 @@ public class RecipientController  implements Initializable {
         Model.getInstance().LogOutUser();
     }
 
-    private void handleComplete(){
+    private void handleComplete(String donorUsername){
         String username = Model.getInstance().getUser().getUsername();
 
-        Recipient.markCompleteDonation(username);
+        Recipient.markCompleteDonation(donorUsername, username);
+
         System.out.println("markCompleteDonation: " + username);
 
     }
 
-    private HBox createVBox(String name, String email, String phoneNumber, String location, String joinedDate) {
+    private HBox createVBox(String name, String status, String requestType) {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
 
@@ -122,8 +139,8 @@ public class RecipientController  implements Initializable {
         vBox1.setAlignment(CENTER_LEFT);
         Label nameLabel = new Label(name);
         nameLabel.setFont(new Font("DejaVu Sans Bold", 18));
-        Label phoneLabel = new Label(phoneNumber);
-        vBox1.getChildren().addAll(nameLabel, phoneLabel);
+        Label statusLabel = new Label(status);
+        vBox1.getChildren().addAll(nameLabel, statusLabel);
         hbox.getChildren().add(vBox1);
 
         // Second VBox
@@ -131,27 +148,27 @@ public class RecipientController  implements Initializable {
         vBox2.setAlignment(CENTER);
         vBox2.setPrefSize(229, 70);
         vBox2.setSpacing(10);
-        Label emailLabel = new Label("Email Address");
-        Label emailText = new Label(email);
+        Label emailLabel = new Label("Request Type");
+        Label emailText = new Label(requestType);
         vBox2.getChildren().addAll(emailLabel, emailText);
         vBox2.setPadding(new Insets(10));
         hbox.getChildren().add(vBox2);
-
-        // Third VBox
-        VBox vBox3 = new VBox();
-        vBox3.setAlignment(CENTER);
-        vBox3.setPrefSize(218, 88);
-        Label locationLabel = new Label("Location");
-        Label locationText = new Label(location);
-        vBox3.getChildren().addAll(locationLabel, locationText);
-        hbox.getChildren().add(vBox3);
+//
+//        // Third VBox
+//        VBox vBox3 = new VBox();
+//        vBox3.setAlignment(CENTER);
+//        vBox3.setPrefSize(218, 88);
+//        Label locationLabel = new Label("Location");
+//        Label locationText = new Label(location);
+//        vBox3.getChildren().addAll(locationLabel, locationText);
+//        hbox.getChildren().add(vBox3);
 
         // Fourth VBox
         VBox vBox4 = new VBox();
         vBox4.setAlignment(CENTER);
         vBox4.setPrefSize(152, 88);
         Button confirmButton = new Button("Confirm pickup");
-        confirmButton.setOnAction(actionEvent -> this.handleComplete());
+        confirmButton.setOnAction(actionEvent -> this.handleComplete(name));
         vBox4.getChildren().addAll(confirmButton);
         hbox.getChildren().add(vBox4);
 
