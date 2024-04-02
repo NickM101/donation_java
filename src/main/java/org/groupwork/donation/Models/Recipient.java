@@ -60,7 +60,7 @@ public class Recipient {
     }
 
     public static void addRequestTDB(String request) {
-        String sql = "UPDATE Recipient_UD SET requestType = ? WHERE email = ?";
+        String sql = "UPDATE Recipient_UD SET requestType = ?, status = 'Active' WHERE email = ?";
 
         String email = Model.getInstance().getUser().getEmail();
 

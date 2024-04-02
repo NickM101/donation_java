@@ -79,7 +79,7 @@ public class RecipientController  implements Initializable {
             for (Map<String, String> donation : donations) {
 
                 // Sample data for demonstration
-                DonorUsername
+                //DonorUsername
                 String name = donation.get("DonorUsername");
                 String status = donation.get("Status");
                 String requestType = donation.get("Request");
