@@ -75,6 +75,7 @@ public class Admin {
                 // Execute the insert query
                 combinedStatement.executeUpdate();
                 System.out.println("Data combined and inserted into the 'combined' table successfully.");
+                updateDonorRecipientStatus(donorUsername, recipientUsername);
             } else {
                 System.out.println("Donor or recipient not found.");
             }
@@ -117,16 +118,6 @@ public class Admin {
         }
     }
 
-    // Method to update status in combined table when recipient clicks complete
-    private void updateCombinedTableStatus(String recipientEmail) throws SQLException {
-        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
-        try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
-             PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
-            updateStatusStatement.setString(1, "Complete");
-            updateStatusStatement.setString(2, recipientEmail);
-            updateStatusStatement.executeUpdate();
-        }
-    }
 
 
     //Method below creates a list of total donations

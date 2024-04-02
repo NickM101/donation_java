@@ -6,14 +6,61 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Recipient {
+    //The method below adds a recipient to the DB on registration. (TDB) To DataBase
+    public static void registerRecipient(String email, String username, String password, String location, String usertype, String phoneno, String orgWeb){
 
-    public static void addRequestTDB(String request)
-    {
-        String sql = "UPDATE Recipient_UD SET requestType = ?, status = 'Active' WHERE email = ?";
+        String inAuth = "INSERT INTO Donation_App_UD (Email, Username, Password, Location, UserType, PhoneNo, Org_Website) VALUES (?,?,?,?,?,?,?)";
+        String inRecipient = "INSERT INTO Recipient_UD (email, username, location, usertype, phone, status, requestType) VALUES (?,?,?,?,?,?,?)";
+
+        try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(inAuth)) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, location);
+            preparedStatement.setString(5, usertype);
+            preparedStatement.setString(6, phoneno);
+            preparedStatement.setString(7, orgWeb);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Success");
+            }
+        } catch (SQLException e){
+            System.out.println("Exception to Auth DB caught");
+            e.printStackTrace();
+        }
+
+        try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
+             PreparedStatement prepStmtRUD = connection.prepareStatement(inRecipient)){
+            prepStmtRUD.setString(1, email);
+            prepStmtRUD.setString(2, username);
+            prepStmtRUD.setString(3, location);
+            prepStmtRUD.setString(4, usertype);
+            prepStmtRUD.setString(5, phoneno);
+            prepStmtRUD.setString(6, "NA");
+            prepStmtRUD.setString(7, "None made");
+
+            int rowsAffected2 = prepStmtRUD.executeUpdate();
+            if (rowsAffected2 > 0){
+                Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                errorAlert.setContentText(email+" Registration Successful. Kindly login");
+                errorAlert.showAndWait();
+                System.out.println("Added to the recipient DB");
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Exception to recipient DB Caught");
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void addRequestTDB(String request) {
+        String sql = "UPDATE Recipient_UD SET requestType = ? WHERE email = ?";
 
         String email = Model.getInstance().getUser().getEmail();
 
@@ -63,20 +110,49 @@ public class Recipient {
         return recipients;
     }
 
+    // Method to update status in combined table when recipient clicks complete
+    public static void markCompleteDonation(String recipientEmail, String donorUsername) {
+        String recipient = Model.getInstance().getUser().getUsername();
+        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
+        try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
+             PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
+            updateStatusStatement.setString(1, "Complete");
+            updateStatusStatement.setString(2, recipientEmail);
+            updateStatusStatement.executeUpdate();
+            updateDonorRecipientStatus(donorUsername, recipient);
+            Alert errorAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            errorAlert.setContentText("Donation is complete.");
+            errorAlert.showAndWait();
+            System.out.println("Added to the recipient DB");
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public static Map<String, String> requestsMade(String recipientEmail) {
+
+    //A list of requests made by a specific recipient and their status
+    public static List<Map<String, String>> requestsMade(String recipientEmail) {
         String query = "SELECT * FROM `Assigned_Donors&Recipients` WHERE RecipientEmail = ?";
-        Map<String, String> requests = new LinkedHashMap<>();
+        List<Map<String, String>>  requests = new ArrayList<>();
 
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, recipientEmail);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                Map<String, String> donor = new HashMap<>();
                 while (resultSet.next()){
-                    requests.put(resultSet.getString("status"), resultSet.getString("requestType"));
+                    donor.put("DonorUsername", resultSet.getString("DonorUsername"));
+                    donor.put("Status", resultSet.getString("Status"));
+                    donor.put("Request", resultSet.getString("Request"));
+                    requests.add(donor);
+//               requests.put(resultSet.getString("status"), resultSet.getString("requestType"));
                 }
+                System.out.println(recipientEmail);
+                System.out.println(requests);
+                return requests;
             }
+
         } catch (SQLException e) {
             System.out.println("Error retrieving requests" + e.getMessage());
             e.printStackTrace();
@@ -85,14 +161,38 @@ public class Recipient {
         return requests;
     }
 
-    // Method to update status in combined table when recipient clicks complete
-    private void updateCombinedTableStatus(String recipientEmail) throws SQLException {
-        String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
+    // Method to update donor and recipient status based on combined table
+    public static void updateDonorRecipientStatus(String donorUsername, String recipientUsername) {
+        String getStatusQuery = "SELECT status FROM `Assigned_Donors&Recipients` WHERE DonorUsername = ? AND RecipientUsername = ?";
+        String updateDonorRecipientStatusQuery = "UPDATE Donor_UD SET status = ? WHERE username = ?;" +
+                "UPDATE Recipient_UD SET status = ? WHERE username = ?;";
+
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
-             PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
-            updateStatusStatement.setString(1, "Complete");
-            updateStatusStatement.setString(2, recipientEmail);
-            updateStatusStatement.executeUpdate();
+             PreparedStatement getStatusStatement = connection.prepareStatement(getStatusQuery);
+             PreparedStatement updateDonorRecipientStatusStatement = connection.prepareStatement(updateDonorRecipientStatusQuery)) {
+
+            // Retrieve status from combined table
+            getStatusStatement.setString(1, donorUsername);
+            getStatusStatement.setString(2, recipientUsername);
+            ResultSet resultSet = getStatusStatement.executeQuery();
+            String status = null;
+            if (resultSet.next()) {
+                status = resultSet.getString("status");
+            }
+
+            // Update donor and recipient status
+            updateDonorRecipientStatusStatement.setString(1, status);
+            updateDonorRecipientStatusStatement.setString(2, donorUsername);
+            updateDonorRecipientStatusStatement.setString(3, status);
+            updateDonorRecipientStatusStatement.setString(4, recipientUsername);
+            updateDonorRecipientStatusStatement.executeUpdate();
+
+            System.out.println("Donor and recipient status updated successfully.");
+
+        } catch (SQLException e) {
+            System.out.println("Error updating donor and recipient status: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 }

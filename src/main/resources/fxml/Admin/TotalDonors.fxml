@@ -15,7 +15,7 @@
                 <Font name="DejaVu Sans Bold" size="36.0" />
             </font>
         </Text>
-        <Label text="This is what we've got for you today." />
+        <Label text="Discover the dedicated individuals who generously support our mission to make a difference in the community." />
     </VBox>
 
     <ScrollPane fx:id="total_donor_scrollable" fitToWidth="true" hbarPolicy="NEVER" layoutX="47.0" layoutY="228.0" prefHeight="720.0" prefWidth="900.0" style="-fx-spacing: 10; -fx-border-color: white; -fx-background-color: white;" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" xmlns:fx="http://javafx.com/fxml">

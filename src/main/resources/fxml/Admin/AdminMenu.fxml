@@ -17,9 +17,9 @@
       </padding>
       <VBox alignment="CENTER" prefHeight="306.0" prefWidth="300.0">
          <ImageView cache="true" fitHeight="152.0" fitWidth="138.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../../Images/iran_woman.jpg" />
+            <Image url="@../../Images/avatar.png" />
          </ImageView>
-         <Label alignment="CENTER" text="Ariana Bahar">
+         <Label alignment="CENTER"  fx:id="username_label">
             <font>
                <Font name="DejaVu Sans Bold" size="18.0" />
             </font>

@@ -18,10 +18,10 @@
                 <children>
                     <ImageView cache="true" fitHeight="225.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../../Images/iran_woman.jpg" />
+                            <Image url="@../../Images/avatar.png" />
                         </image>
                     </ImageView>
-                    <Label alignment="CENTER" text="Ariana Bahar">
+                    <Label alignment="CENTER" fx:id="username_label">
                         <font>
                             <Font name="DejaVu Sans Bold" size="18.0" />
                         </font>

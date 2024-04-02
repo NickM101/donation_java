@@ -3,6 +3,7 @@ package org.groupwork.donation.Controllers.Admin;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.groupwork.donation.Models.Model;
 
@@ -17,10 +18,12 @@ public class AdminMenuController implements Initializable {
     public Button total_recipients_button;
     public Button total_donations_button;
     public Button log_out_button;
+    public Label username_label = new Label();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Initialized");
+        String username = Model.getInstance().getUser().getUsername();
+        username_label.setText(username);
         addListeners();
     }
 
