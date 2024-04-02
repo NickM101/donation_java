@@ -14,7 +14,7 @@ import java.util.Map;
 public class Donor {
     public static void addDonationTDB(String donation)
     {
-        String sql = "UPDATE Donor_UD SET donationType = ? WHERE email = ?";
+        String sql = "UPDATE Donor_UD SET donationType = ?, status = 'Active' WHERE email = ?";
 
         String email = Model.getInstance().getUser().getEmail();
 
