@@ -65,7 +65,7 @@ public class RecipientController  implements Initializable {
             List<Map<String, String>> donations = Recipient.requestsMade(user_email);
 
             if(donations.isEmpty()){
-                HBox hbox = createVBox("", "");
+                HBox hbox = createVBox("", "", "");
 
                 Platform.runLater(() -> {
                     // Remove loading indicator
