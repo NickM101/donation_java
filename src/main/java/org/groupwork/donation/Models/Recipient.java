@@ -10,9 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Recipient {
-
-    public static void addRequestTDB(String request)
-    {
+    public static void addRequestTDB(String request) {
         String sql = "UPDATE Recipient_UD SET requestType = ? WHERE email = ?";
 
         String email = Model.getInstance().getUser().getEmail();
@@ -63,7 +61,6 @@ public class Recipient {
         return recipients;
     }
 
-
     public static Map<String, String> requestsMade(String recipientEmail) {
         String query = "SELECT * FROM `Assigned_Donors&Recipients` WHERE RecipientEmail = ?";
         Map<String, String> requests = new LinkedHashMap<>();
@@ -86,13 +83,15 @@ public class Recipient {
     }
 
     // Method to update status in combined table when recipient clicks complete
-    private void updateCombinedTableStatus(String recipientEmail) throws SQLException {
+    public static void markCompleteDonation(String recipientEmail) {
         String updateStatusQuery = "UPDATE `Assigned_Donors&Recipients` SET status = ? WHERE RecipientUsername = ?";
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement updateStatusStatement = connection.prepareStatement(updateStatusQuery)) {
             updateStatusStatement.setString(1, "Complete");
             updateStatusStatement.setString(2, recipientEmail);
             updateStatusStatement.executeUpdate();
+        }  catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

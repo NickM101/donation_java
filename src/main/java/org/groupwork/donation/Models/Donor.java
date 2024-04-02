@@ -49,7 +49,6 @@ public class Donor {
         try (Connection connection = Model.getInstance().getDatabaseDriver().connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, "-");
-
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()){
                     return donors;
@@ -57,10 +56,10 @@ public class Donor {
                 donorsArray(donors, resultSet);
             }
         } catch (SQLException e) {
-            System.out.println("Error retrieving users by userType: " + e.getMessage());
+            System.out.println("Error retrieving donations made: " + e.getMessage());
             e.printStackTrace();
         }
-
+        System.out.println(donors);
         return donors;
     }
 
@@ -75,5 +74,7 @@ public class Donor {
             donors.add(donor);
         }
     }
+
+
 
 }

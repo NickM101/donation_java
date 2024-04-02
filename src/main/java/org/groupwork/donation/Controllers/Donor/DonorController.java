@@ -35,10 +35,12 @@ public class DonorController implements Initializable {
     public ComboBox<String> combo_box = new ComboBox<>();
 
     private final String[] donationTypes = { "Food", "Clothes", "Others" };
+    public Label username_label = new Label();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        String username = Model.getInstance().getUser().getUsername();
+        username_label.setText(username);
         combo_box.setItems(FXCollections.observableArrayList(donationTypes));
     }
 

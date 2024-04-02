@@ -3,6 +3,7 @@ package org.groupwork.donation.Controllers.Recipient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -22,6 +23,7 @@ import org.groupwork.donation.Models.Recipient;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -38,9 +40,12 @@ public class RecipientController  implements Initializable {
     public ComboBox<String> combo_box = new ComboBox<>();
 
     private final String[] donationTypes = { "Food", "Clothes", "Others" };
+    public Label username_label = new Label();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        String username = Model.getInstance().getUser().getUsername();
+        username_label.setText(username);
         combo_box.setItems(FXCollections.observableArrayList(donationTypes));
 
         InputStream image = getClass().getResourceAsStream("/Images/charity.png");
@@ -95,8 +100,13 @@ public class RecipientController  implements Initializable {
         Model.getInstance().LogOutUser();
     }
 
+    private void handleComplete(){
+        String username = Model.getInstance().getUser().getUsername();
 
+        Recipient.markCompleteDonation(username);
+        System.out.println("markCompleteDonation: " + username);
 
+    }
 
     private HBox createVBox(String name, String email, String phoneNumber, String location, String joinedDate) {
         HBox hbox = new HBox();
@@ -141,6 +151,7 @@ public class RecipientController  implements Initializable {
         vBox4.setAlignment(CENTER);
         vBox4.setPrefSize(152, 88);
         Button confirmButton = new Button("Confirm pickup");
+        confirmButton.setOnAction(actionEvent -> this.handleComplete());
         vBox4.getChildren().addAll(confirmButton);
         hbox.getChildren().add(vBox4);
 

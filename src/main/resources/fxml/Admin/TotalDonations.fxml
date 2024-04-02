@@ -16,7 +16,7 @@
                 <Font name="DejaVu Sans Bold" size="36.0"/>
             </font>
         </Text>
-        <Label text="This is what we've got for you today."/>
+        <Label text="Explore the donations that are making a meaningful difference in the lives of individuals and communities."/>
     </VBox>
 
     <ScrollPane fx:id="total_donor_scrollable" fitToWidth="true" hbarPolicy="NEVER" layoutX="47.0" layoutY="228.0"
