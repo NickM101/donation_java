@@ -46,8 +46,8 @@ public class Donor {
             prepStmtDUD.setString(3, location);
             prepStmtDUD.setString(4, usertype);
             prepStmtDUD.setString(5, phoneno);
-            prepStmtDUD.setString(6, "NA");
-            prepStmtDUD.setString(7, "None made");
+            prepStmtDUD.setString(6, "-");
+            prepStmtDUD.setString(7, "-");
 
             int rowsAffected2 = prepStmtDUD.executeUpdate();
             if (rowsAffected2 > 0){

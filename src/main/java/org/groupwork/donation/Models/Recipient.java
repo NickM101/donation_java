@@ -41,8 +41,8 @@ public class Recipient {
             prepStmtRUD.setString(3, location);
             prepStmtRUD.setString(4, usertype);
             prepStmtRUD.setString(5, phoneno);
-            prepStmtRUD.setString(6, "NA");
-            prepStmtRUD.setString(7, "None made");
+            prepStmtRUD.setString(6, "-");
+            prepStmtRUD.setString(7, "-");
 
             int rowsAffected2 = prepStmtRUD.executeUpdate();
             if (rowsAffected2 > 0){
