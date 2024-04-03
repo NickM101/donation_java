@@ -117,11 +117,11 @@ public class RecipientController  implements Initializable {
     }
 
     private void handleComplete(String donorUsername){
-        String username = Model.getInstance().getUser().getUsername();
+        String email = Model.getInstance().getUser().getEmail();
 
-        Recipient.markCompleteDonation(donorUsername, username);
+        Recipient.markCompleteDonation(email);
 
-        System.out.println("markCompleteDonation: " + username);
+        System.out.println("markCompleteDonation: " + email);
 
     }
 
